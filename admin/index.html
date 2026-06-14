@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Vantage Delta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #FAF8F4; --surface: #FFFFFF; --ink: #1E1B18;
+      --ink-soft: #7A746E; --border: #E2DDD6;
+      --primary: #A0632A; --primary-soft: #F2E8DC; --primary-dark: #6B3D14;
+      --accent: #F5C518; --green: #3B7A4E; --green-soft: #E4EFE6;
+      --red: #C0463C; --red-soft: #F8E7E5; --blue: #2F6FB3;
+      --font: 'Plus Jakarta Sans', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--paper); color: var(--ink); -webkit-font-smoothing: antialiased; }
+
+    /* ── Login gate ── */
+    #loginGate {
+      position: fixed; inset: 0; background: var(--ink);
+      display: flex; align-items: center; justify-content: center; z-index: 999;
+    }
+    .login-card {
+      background: var(--surface); border-radius: 16px;
+      padding: 40px; width: 340px; text-align: center;
+    }
+    .login-card h2 { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+    .login-card p { font-size: 13px; color: var(--ink-soft); margin-bottom: 24px; }
+    .login-card input {
+      width: 100%; padding: 10px 14px; border: 1px solid var(--border);
+      border-radius: 8px; font-family: var(--font); font-size: 14px;
+      margin-bottom: 12px; background: var(--paper);
+    }
+    .login-card input:focus { outline: none; border-color: var(--primary); }
+    .login-card button {
+      width: 100%; padding: 11px; background: var(--ink); color: var(--paper);
+      border: none; border-radius: 999px; font-family: var(--font);
+      font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    .login-error { color: var(--red); font-size: 12px; margin-top: 8px; display: none; }
+
+    /* ── Admin shell ── */
+    #adminShell { display: none; min-height: 100vh; }
+    .admin-header {
+      background: var(--ink); color: var(--paper);
+      padding: 0 32px; height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .admin-header .brand { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    .admin-badge { font-family: var(--mono); font-size: 10px; background: var(--primary); color: #fff; padding: 3px 8px; border-radius: 999px; }
+    .admin-header a { color: #A9A49C; font-size: 13px; text-decoration: none; }
+    .admin-header a:hover { color: #fff; }
+
+    .admin-body { max-width: 900px; margin: 0 auto; padding: 40px 32px; }
+    .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+    .admin-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 24px;
+    }
+    .admin-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .admin-card .card-sub { font-size: 12px; color: var(--ink-soft); margin-bottom: 20px; font-family: var(--mono); }
+
+    /* Status toggle */
+    .status-row { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+    .status-dot.off { background: var(--red); }
+    .status-label { font-size: 14px; font-weight: 600; flex: 1; }
+    .toggle-switch { position: relative; width: 44px; height: 26px; flex-shrink: 0; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-track {
+      position: absolute; inset: 0; border-radius: 999px;
+      background: var(--red); transition: background 0.2s; cursor: pointer;
+    }
+    .toggle-track::before {
+      content: ''; position: absolute; width: 20px; height: 20px;
+      left: 3px; top: 3px; background: white; border-radius: 50%; transition: transform 0.2s;
+    }
+    .toggle-switch input:checked ~ .toggle-track { background: var(--green); }
+    .toggle-switch input:checked ~ .toggle-track::before { transform: translateX(18px); }
+
+    /* Hours control */
+    .hours-row { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+    .hours-row label { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+    .hours-input {
+      width: 64px; padding: 8px 10px; border: 1px solid var(--border);
+      border-radius: 8px; font-family: var(--mono); font-size: 14px;
+      text-align: center; color: var(--blue); font-weight: 600;
+      background: var(--paper);
+    }
+    .hours-input:focus { outline: none; border-color: var(--primary); }
+    .hours-row span { font-size: 13px; color: var(--ink-soft); }
+
+    /* Save button */
+    .btn-save {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--ink); color: var(--paper); border: none;
+      padding: 9px 18px; border-radius: 999px; font-family: var(--font);
+      font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 16px;
+      transition: background 0.15s;
+    }
+    .btn-save:hover { background: var(--primary-dark); }
+    .save-confirm { font-size: 12px; color: var(--green); margin-top: 8px; display: none; font-family: var(--mono); }
+
+    /* Notion links */
+    .notion-links { display: flex; flex-direction: column; gap: 10px; }
+    .notion-link {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px;
+      text-decoration: none; color: var(--ink); transition: border-color 0.15s, background 0.15s;
+    }
+    .notion-link:hover { border-color: var(--primary); background: var(--primary-soft); }
+    .notion-icon { font-size: 18px; width: 28px; text-align: center; }
+    .notion-link-text { flex: 1; }
+    .notion-link-title { font-size: 13px; font-weight: 600; display: block; }
+    .notion-link-sub { font-size: 11px; color: var(--ink-soft); font-family: var(--mono); }
+    .notion-arrow { color: var(--ink-soft); font-size: 14px; }
+
+    /* User type preview */
+    .user-types { display: flex; flex-direction: column; gap: 8px; }
+    .user-type-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
+    }
+    .user-type-badge {
+      font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 999px;
+      font-family: var(--mono); white-space: nowrap;
+    }
+    .badge-client { background: var(--primary-soft); color: var(--primary-dark); }
+    .badge-coach { background: #E3EEF9; color: #163A5C; }
+    .badge-admin { background: var(--ink); color: var(--paper); }
+    .user-type-desc { font-size: 12px; color: var(--ink-soft); line-height: 1.4; }
+
+    /* Site link */
+    .site-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--ink-soft); text-decoration: none;
+      border: 1px solid var(--border); border-radius: 999px; padding: 6px 12px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .site-link:hover { color: var(--ink); border-color: var(--ink-soft); }
+
+    .section-title {
+      font-size: 11px; font-family: var(--mono); text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--ink-soft); margin-bottom: 20px;
+    }
+
+    @media (max-width: 700px) {
+      .admin-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Login gate ──────────────────────────────────────────────────────────── -->
+<div id="loginGate">
+  <div class="login-card">
+    <h2>Vantage Delta</h2>
+    <p>Admin access only</p>
+    <input type="password" id="adminPass" placeholder="Password" autocomplete="current-password">
+    <button onclick="checkPass()">Sign in</button>
+    <p class="login-error" id="loginError">Incorrect password</p>
+  </div>
+</div>
+
+<!-- ── Admin shell ─────────────────────────────────────────────────────────── -->
+<div id="adminShell">
+  <header class="admin-header">
+    <div class="brand">
+      Vantage Delta <span class="admin-badge">Admin</span>
+    </div>
+    <div style="display:flex;gap:20px;align-items:center;">
+      <a href="/" target="_blank">← View site</a>
+      <a href="#" onclick="signOut()">Sign out</a>
+    </div>
+  </header>
+
+  <div class="admin-body">
+    <p class="section-title">Dashboard</p>
+    <div class="admin-grid">
+
+      <!-- Availability control -->
+      <div class="admin-card">
+        <h3>Coaching availability</h3>
+        <p class="card-sub">Controls the hero badge on the live site</p>
+
+        <div class="status-row">
+          <span class="status-dot" id="adminStatusDot"></span>
+          <span class="status-label" id="adminStatusLabel">Available</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="adminToggle" checked>
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+
+        <div class="hours-row">
+          <label for="hoursInput">Response window:</label>
+          <input type="number" id="hoursInput" class="hours-input" value="24" min="1" max="72">
+          <span>hours</span>
+        </div>
+
+        <button class="btn-save" onclick="saveAvailability()">Save &amp; publish</button>
+        <p class="save-confirm" id="saveConfirm">✓ Published to live site</p>
+      </div>
+
+      <!-- Notion CMS links -->
+      <div class="admin-card">
+        <h3>Content</h3>
+        <p class="card-sub">Edit via Notion — changes reflect on site within ~60s</p>
+        <div class="notion-links">
+          <a class="notion-link" href="https://app.notion.com/p/37ffffd7c62581bdbefedec3fb6a117f" target="_blank" rel="noopener">
+            <span class="notion-icon">💬</span>
+            <span class="notion-link-text">
+              <span class="notion-link-title">Case Studies</span>
+              <span class="notion-link-sub">Testimonials — carousel on landing page</span>
+            </span>
+            <span class="notion-arrow">↗</span>
+          </a>
+          <a class="notion-link" href="https://app.notion.com/p/37ffffd7c6258129a0f9c37a1b2d938d" target="_blank" rel="noopener">
+            <span class="notion-icon">🗂️</span>
+            <span class="notion-link-text">
+              <span class="notion-link-title">Site Structure</span>
+              <span class="notion-link-sub">Component map &amp; design tokens</span>
+            </span>
+            <span class="notion-arrow">↗</span>
+          </a>
+          <a class="notion-link" href="https://app.notion.com/p/37ffffd7c625819c879bf5150c12028a" target="_blank" rel="noopener">
+            <span class="notion-icon">✅</span>
+            <span class="notion-link-text">
+              <span class="notion-link-title">Build Checklist</span>
+              <span class="notion-link-sub">Phase 1 &amp; 2 progress tracking</span>
+            </span>
+            <span class="notion-arrow">↗</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- User types reference -->
+      <div class="admin-card">
+        <h3>User types</h3>
+        <p class="card-sub">Supabase roles — portal access levels</p>
+        <div class="user-types">
+          <div class="user-type-row">
+            <span class="user-type-badge badge-client">client</span>
+            <span class="user-type-desc">Career Acceleration clients — view delivered docs, book sessions via Calendly, access session notes</span>
+          </div>
+          <div class="user-type-row">
+            <span class="user-type-badge badge-coach">coach</span>
+            <span class="user-type-desc">Coaching Stack clients — all client access + AI assistant dashboard, client roster, resource library</span>
+          </div>
+          <div class="user-type-row">
+            <span class="user-type-badge badge-admin">admin</span>
+            <span class="user-type-desc">You — full access to all client records, availability controls, and this panel</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick links -->
+      <div class="admin-card">
+        <h3>Quick links</h3>
+        <p class="card-sub">External services</p>
+        <div class="notion-links">
+          <a class="notion-link" href="https://app.hubspot.com" target="_blank" rel="noopener">
+            <span class="notion-icon">📥</span>
+            <span class="notion-link-text">
+              <span class="notion-link-title">HubSpot CRM</span>
+              <span class="notion-link-sub">Quick Book leads &amp; contact records</span>
+            </span>
+            <span class="notion-arrow">↗</span>
+          </a>
+          <a class="notion-link" href="https://calendly.com" target="_blank" rel="noopener">
+            <span class="notion-icon">📅</span>
+            <span class="notion-link-text">
+              <span class="notion-link-title">Calendly</span>
+              <span class="notion-link-sub">Session scheduling &amp; availability</span>
+            </span>
+            <span class="notion-arrow">↗</span>
+          </a>
+          <a class="notion-link" href="https://supabase.com/dashboard" target="_blank" rel="noopener">
+            <span class="notion-icon">🔐</span>
+            <span class="notion-link-text">
+              <span class="notion-link-title">Supabase</span>
+              <span class="notion-link-sub">Client portal auth &amp; user management</span>
+            </span>
+            <span class="notion-arrow">↗</span>
+          </a>
+          <a class="notion-link" href="https://vercel.com/dashboard" target="_blank" rel="noopener">
+            <span class="notion-icon">▲</span>
+            <span class="notion-link-text">
+              <span class="notion-link-title">Vercel</span>
+              <span class="notion-link-sub">Deployments &amp; env vars</span>
+            </span>
+            <span class="notion-arrow">↗</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ── Auth (client-side only — move to Vercel password protection or Supabase in production) */
+  const ADMIN_PASS = 'vd-admin-2026'; // change this before going live
+
+  function checkPass() {
+    const val = document.getElementById('adminPass').value;
+    if (val === ADMIN_PASS) {
+      document.getElementById('loginGate').style.display = 'none';
+      document.getElementById('adminShell').style.display = 'block';
+      sessionStorage.setItem('vd_admin', '1');
+    } else {
+      document.getElementById('loginError').style.display = 'block';
+    }
+  }
+
+  function signOut() {
+    sessionStorage.removeItem('vd_admin');
+    location.reload();
+  }
+
+  // Auto-unlock if already authed this session
+  if (sessionStorage.getItem('vd_admin')) {
+    document.getElementById('loginGate').style.display = 'none';
+    document.getElementById('adminShell').style.display = 'block';
+  }
+
+  // Enter key on password field
+  document.getElementById('adminPass')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') checkPass();
+  });
+
+  /* ── Availability toggle */
+  const adminToggle = document.getElementById('adminToggle');
+  const adminDot    = document.getElementById('adminStatusDot');
+  const adminLabel  = document.getElementById('adminStatusLabel');
+
+  adminToggle.addEventListener('change', () => {
+    const on = adminToggle.checked;
+    adminDot.classList.toggle('off', !on);
+    adminLabel.textContent = on ? 'Available' : 'Unavailable';
+  });
+
+  /* ── Save availability + hours to localStorage (wire to Notion/Supabase in Phase 2) */
+  function saveAvailability() {
+    const available = adminToggle.checked;
+    const hours     = parseInt(document.getElementById('hoursInput').value) || 24;
+
+    // Persist locally for now
+    localStorage.setItem('vd_available', available ? '1' : '0');
+    localStorage.setItem('vd_hours', hours);
+
+    // Show confirm
+    const confirm = document.getElementById('saveConfirm');
+    confirm.style.display = 'block';
+    setTimeout(() => confirm.style.display = 'none', 3000);
+  }
+
+  // Restore saved state
+  const savedAvail = localStorage.getItem('vd_available');
+  const savedHours = localStorage.getItem('vd_hours');
+  if (savedAvail !== null) {
+    adminToggle.checked = savedAvail === '1';
+    adminDot.classList.toggle('off', savedAvail !== '1');
+    adminLabel.textContent = savedAvail === '1' ? 'Available' : 'Unavailable';
+  }
+  if (savedHours) {
+    document.getElementById('hoursInput').value = savedHours;
+  }
+</script>
+</body>
+</html>

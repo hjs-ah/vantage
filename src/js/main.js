@@ -1,4 +1,4 @@
-/* ─── Vantage Collective — main.js ─────────────────────────────────────────────── */
+/* ─── Vantage Delta — main.js ─────────────────────────────────────────────── */
 
 /* ── 1. Hero console typewriter ─────────────────────────────────────────── */
 const phrases = [
@@ -68,26 +68,34 @@ document.querySelectorAll('.faq-item').forEach(item => {
   });
 });
 
-/* ── 5. Availability badge — driven by admin toggle ─────────────────────── */
-const availToggle = document.getElementById('availToggle');
-const availDot    = document.getElementById('availDot');
-const availText   = document.getElementById('availText');
-const adminSub    = document.getElementById('adminSub');
+/* ── 5. Availability badge — fetches from /api/availability ─────────────── */
+const availDot  = document.getElementById('availDot');
+const availText = document.getElementById('availText');
 
-function setAvailability(available) {
-  if (available) {
-    availDot.classList.remove('off');
-    availText.textContent = 'Coaches available today';
-    if (adminSub) adminSub.textContent = 'green — clients can quick-book same-day';
-  } else {
-    availDot.classList.add('off');
-    availText.textContent = 'No coaches available today';
-    if (adminSub) adminSub.textContent = 'red — same-day booking hidden from clients';
+async function loadAvailability() {
+  try {
+    const res  = await fetch('/api/availability');
+    const data = await res.json();
+    setAvailability(data.available, data.hours);
+  } catch {
+    // API not wired yet — fall back to localStorage or default
+    const saved      = localStorage.getItem('vd_available');
+    const savedHours = localStorage.getItem('vd_hours');
+    setAvailability(saved !== '0', parseInt(savedHours) || 24);
   }
 }
 
-availToggle?.addEventListener('change', () => setAvailability(availToggle.checked));
-setAvailability(true); // default
+function setAvailability(available, hours = 24) {
+  if (available) {
+    availDot.classList.remove('off');
+    availText.innerHTML = `Coaching available within <strong>${hours}</strong> hours`;
+  } else {
+    availDot.classList.add('off');
+    availText.textContent = 'No coaching available right now';
+  }
+}
+
+loadAvailability();
 
 /* ── 6. Quick Book card ──────────────────────────────────────────────────── */
 const qbOverlay = document.getElementById('qbOverlay');

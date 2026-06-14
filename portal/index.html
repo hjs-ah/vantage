@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal — Vantage Delta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --paper: #FAF8F4; --surface: #FFFFFF; --ink: #1E1B18;
+      --ink-soft: #7A746E; --border: #E2DDD6;
+      --primary: #A0632A; --primary-soft: #F2E8DC; --primary-dark: #6B3D14;
+      --accent: #F5C518; --green: #3B7A4E; --green-soft: #E4EFE6;
+      --red: #C0463C; --blue: #2F6FB3; --blue-soft: #E3EEF9;
+      --font: 'Plus Jakarta Sans', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--paper); color: var(--ink); -webkit-font-smoothing: antialiased; }
+
+    /* ── Auth screen ── */
+    #authScreen {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: var(--ink);
+    }
+    .auth-card {
+      background: var(--surface); border-radius: 16px;
+      padding: 40px; width: 360px;
+    }
+    .auth-logo { font-size: 14px; font-weight: 800; color: var(--primary); margin-bottom: 24px; }
+    .auth-card h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+    .auth-card p { font-size: 13px; color: var(--ink-soft); margin-bottom: 28px; }
+    .auth-field { margin-bottom: 14px; }
+    .auth-field label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; }
+    .auth-field input {
+      width: 100%; padding: 10px 14px; border: 1px solid var(--border);
+      border-radius: 8px; font-family: var(--font); font-size: 14px; background: var(--paper);
+    }
+    .auth-field input:focus { outline: none; border-color: var(--primary); }
+    .auth-btn {
+      width: 100%; padding: 12px; background: var(--ink); color: var(--paper);
+      border: none; border-radius: 999px; font-family: var(--font);
+      font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px;
+      transition: background 0.15s;
+    }
+    .auth-btn:hover { background: var(--primary-dark); }
+    .auth-error { font-size: 12px; color: var(--red); margin-top: 10px; display: none; }
+    .auth-back { font-size: 12px; color: var(--ink-soft); text-align: center; margin-top: 16px; }
+    .auth-back a { color: var(--primary); text-decoration: none; }
+
+    /* ── Portal shell ── */
+    #portalShell { display: none; min-height: 100vh; }
+    .portal-header {
+      background: var(--ink); color: var(--paper); height: 60px;
+      display: flex; align-items: center; justify-content: space-between; padding: 0 32px;
+    }
+    .portal-brand { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    .role-badge {
+      font-family: var(--mono); font-size: 10px; padding: 3px 8px;
+      border-radius: 999px; font-weight: 500;
+    }
+    .role-client { background: var(--primary-soft); color: var(--primary-dark); }
+    .role-coach  { background: var(--blue-soft); color: var(--blue); }
+    .role-admin  { background: var(--accent); color: var(--ink); }
+    .portal-header-right { display: flex; align-items: center; gap: 20px; }
+    .portal-header-right span { font-size: 13px; color: #A9A49C; font-family: var(--mono); }
+    .portal-header-right a { color: #A9A49C; font-size: 13px; text-decoration: none; }
+    .portal-header-right a:hover { color: #fff; }
+
+    .portal-body { max-width: 900px; margin: 0 auto; padding: 40px 32px; }
+
+    /* ── Nav tabs ── */
+    .portal-nav {
+      display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 32px;
+    }
+    .portal-tab {
+      background: none; border: none; border-bottom: 2px solid transparent;
+      padding: 12px 16px; font-family: var(--font); font-size: 13px; font-weight: 600;
+      color: var(--ink-soft); cursor: pointer; margin-bottom: -1px; transition: color 0.15s, border-color 0.15s;
+    }
+    .portal-tab:hover { color: var(--ink); }
+    .portal-tab.active { color: var(--ink); border-bottom-color: var(--accent); }
+    .portal-tab.coach-only  { display: none; }
+    .portal-tab.admin-only  { display: none; }
+
+    /* ── Tab panels ── */
+    .portal-panel { display: none; }
+    .portal-panel.active { display: block; animation: fadeIn 0.2s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+    /* ── Cards ── */
+    .panel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+    .p-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 20px;
+    }
+    .p-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .p-card .p-sub { font-size: 12px; color: var(--ink-soft); margin-bottom: 14px; font-family: var(--mono); }
+    .p-card p { font-size: 13px; color: var(--ink-soft); line-height: 1.6; }
+
+    /* Doc list */
+    .doc-list { display: flex; flex-direction: column; gap: 8px; }
+    .doc-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
+      text-decoration: none; color: var(--ink); transition: border-color 0.15s, background 0.15s;
+    }
+    .doc-item:hover { border-color: var(--primary); background: var(--primary-soft); }
+    .doc-icon { font-size: 16px; width: 24px; text-align: center; }
+    .doc-name { font-size: 13px; font-weight: 600; flex: 1; }
+    .doc-meta { font-size: 11px; color: var(--ink-soft); font-family: var(--mono); }
+
+    /* Calendly embed placeholder */
+    .calendly-wrap {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 24px; text-align: center;
+    }
+    .calendly-wrap h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .calendly-wrap p { font-size: 13px; color: var(--ink-soft); margin-bottom: 20px; }
+    .btn-calendly {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--ink); color: var(--paper); border: none; border-radius: 999px;
+      padding: 11px 24px; font-family: var(--font); font-size: 13px; font-weight: 600;
+      text-decoration: none; cursor: pointer; transition: background 0.15s;
+    }
+    .btn-calendly:hover { background: var(--primary-dark); }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center; padding: 48px 24px;
+      color: var(--ink-soft); font-size: 13px; line-height: 1.6;
+    }
+    .empty-icon { font-size: 32px; margin-bottom: 12px; }
+
+    /* Coach roster table */
+    .roster-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .roster-table th {
+      text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border);
+      font-size: 11px; font-family: var(--mono); text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--ink-soft);
+    }
+    .roster-table td { padding: 12px 12px; border-bottom: 1px solid var(--border); }
+    .roster-table tr:last-child td { border-bottom: none; }
+
+    @media (max-width: 700px) {
+      .panel-grid { grid-template-columns: 1fr; }
+      .portal-header { padding: 0 16px; }
+      .portal-body { padding: 24px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Auth Screen ─────────────────────────────────────────────────────────── -->
+<div id="authScreen">
+  <div class="auth-card">
+    <div class="auth-logo">Vantage Delta</div>
+    <h2>Client portal</h2>
+    <p>Sign in to access your documents, sessions, and resources.</p>
+    <div class="auth-field">
+      <label for="loginEmail">Email</label>
+      <input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email">
+    </div>
+    <div class="auth-field">
+      <label for="loginPassword">Password</label>
+      <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="auth-btn" id="signInBtn">Sign in</button>
+    <p class="auth-error" id="authError">Incorrect email or password</p>
+    <p class="auth-back"><a href="/">← Back to vantagedelta.co</a></p>
+  </div>
+</div>
+
+<!-- ── Portal Shell ────────────────────────────────────────────────────────── -->
+<div id="portalShell">
+  <header class="portal-header">
+    <div class="portal-brand">
+      Vantage Delta
+      <span class="role-badge" id="roleBadge">client</span>
+    </div>
+    <div class="portal-header-right">
+      <span id="userEmail"></span>
+      <a href="#" id="signOutBtn">Sign out</a>
+    </div>
+  </header>
+
+  <div class="portal-body">
+
+    <!-- Nav tabs — shown/hidden based on role -->
+    <nav class="portal-nav">
+      <button class="portal-tab active" data-panel="docs">My documents</button>
+      <button class="portal-tab" data-panel="sessions">Sessions</button>
+      <button class="portal-tab coach-only" data-panel="assistant">AI assistant</button>
+      <button class="portal-tab coach-only" data-panel="roster">My clients</button>
+      <button class="portal-tab admin-only" data-panel="allusers">All users</button>
+    </nav>
+
+    <!-- Documents panel -->
+    <div class="portal-panel active" data-panel="docs">
+      <div class="panel-grid">
+        <div class="p-card">
+          <h4>Delivered documents</h4>
+          <p class="p-sub">Shared by your coach</p>
+          <div class="doc-list" id="docList">
+            <div class="empty-state">
+              <div class="empty-icon">📄</div>
+              No documents shared yet. Check back after your first session.
+            </div>
+          </div>
+        </div>
+        <div class="p-card">
+          <h4>Your lab</h4>
+          <p class="p-sub">Enrolled track</p>
+          <div id="labSummary" style="font-size:13px;color:var(--ink-soft);line-height:1.6;">
+            Loading your enrollment details...
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sessions panel -->
+    <div class="portal-panel" data-panel="sessions">
+      <div class="calendly-wrap">
+        <h4>Book or manage sessions</h4>
+        <p>Schedule a session, view upcoming bookings, or reschedule via Calendly.</p>
+        <!-- Replace YOUR_CALENDLY_HANDLE with actual handle -->
+        <a class="btn-calendly" href="https://calendly.com/YOUR_CALENDLY_HANDLE" target="_blank" rel="noopener">
+          📅 Open scheduling
+        </a>
+      </div>
+      <div class="p-card" style="margin-top:16px;">
+        <h4>Session notes</h4>
+        <p class="p-sub">From your coach</p>
+        <div id="notesList">
+          <div class="empty-state">
+            <div class="empty-icon">🗒️</div>
+            Session notes will appear here after each session.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI assistant panel (coach role only) -->
+    <div class="portal-panel" data-panel="assistant">
+      <div class="p-card">
+        <h4>Your Vantage Delta AI assistant</h4>
+        <p class="p-sub">Trained on your coaching frameworks</p>
+        <p style="font-size:13px;color:var(--ink-soft);line-height:1.6;margin-bottom:16px;">
+          Your assistant is being configured. Once activated, it will be available here
+          for your clients to access between sessions — trained on your materials and methodology.
+        </p>
+        <div class="empty-state">
+          <div class="empty-icon">🤖</div>
+          Assistant setup in progress. You'll receive an email when it's ready.
+        </div>
+      </div>
+    </div>
+
+    <!-- Client roster panel (coach role only) -->
+    <div class="portal-panel" data-panel="roster">
+      <div class="p-card">
+        <h4>Your clients</h4>
+        <p class="p-sub">Managed via Supabase — edit roles in dashboard</p>
+        <table class="roster-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Lab</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="rosterBody">
+            <tr>
+              <td colspan="4" style="text-align:center;color:var(--ink-soft);padding:24px;">
+                No clients yet — they'll appear here after signing up.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- All users panel (admin only) -->
+    <div class="portal-panel" data-panel="allusers">
+      <div class="p-card">
+        <h4>All portal users</h4>
+        <p class="p-sub">Admin view — Supabase Auth</p>
+        <table class="roster-table">
+          <thead>
+            <tr><th>Email</th><th>Role</th><th>Joined</th><th>Last sign-in</th></tr>
+          </thead>
+          <tbody id="allUsersBody">
+            <tr><td colspan="4" style="text-align:center;color:var(--ink-soft);padding:24px;">
+              Loading users from Supabase...
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  /* ── Supabase init ────────────────────────────────────────────────────────
+     Replace these with your actual Supabase project URL and anon key.
+     Set them as Vercel env vars: SUPABASE_URL and SUPABASE_ANON_KEY
+     In production, inject via a build step — never hardcode secrets.        */
+  const SUPABASE_URL  = 'YOUR_SUPABASE_URL';
+  const SUPABASE_ANON = 'YOUR_SUPABASE_ANON_KEY';
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  /* ── Role definitions ─────────────────────────────────────────────────────
+     Stored in Supabase user_metadata as: { role: 'client' | 'coach' | 'admin' }
+     Set this when creating users in Supabase dashboard, or via the admin API. */
+
+  const ROLES = { CLIENT: 'client', COACH: 'coach', ADMIN: 'admin' };
+
+  /* ── Auth flow ─────────────────────────────────────────────────────────── */
+  async function init() {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      showPortal(session.user);
+    }
+  }
+
+  document.getElementById('signInBtn').addEventListener('click', async () => {
+    const email    = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      document.getElementById('authError').style.display = 'block';
+    } else {
+      showPortal(data.user);
+    }
+  });
+
+  document.getElementById('loginPassword').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('signInBtn').click();
+  });
+
+  document.getElementById('signOutBtn').addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    document.getElementById('portalShell').style.display = 'none';
+    document.getElementById('authScreen').style.display = 'flex';
+  });
+
+  /* ── Show portal by role ────────────────────────────────────────────────── */
+  function showPortal(user) {
+    const role = user.user_metadata?.role || ROLES.CLIENT;
+
+    document.getElementById('authScreen').style.display = 'none';
+    document.getElementById('portalShell').style.display = 'block';
+    document.getElementById('userEmail').textContent = user.email;
+
+    // Role badge
+    const badge = document.getElementById('roleBadge');
+    badge.textContent = role;
+    badge.className = `role-badge role-${role}`;
+
+    // Show/hide coach and admin tabs
+    if (role === ROLES.COACH || role === ROLES.ADMIN) {
+      document.querySelectorAll('.coach-only').forEach(el => el.style.display = 'block');
+    }
+    if (role === ROLES.ADMIN) {
+      document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'block');
+    }
+
+    // Lab summary by role
+    const labSummary = document.getElementById('labSummary');
+    const labMap = {
+      client: 'Career Lab — Career Acceleration track',
+      coach:  'Coaching Lab — Coaching Stack implementation',
+      admin:  'Admin — full access across all labs'
+    };
+    labSummary.textContent = labMap[role] || 'Enrolled in Vantage Delta';
+
+    /* Load docs from Supabase (wire up when DB is ready)
+    loadDocs(user.id);
+    */
+  }
+
+  /* ── Portal tab navigation ─────────────────────────────────────────────── */
+  const portalTabs   = document.querySelectorAll('.portal-tab');
+  const portalPanels = document.querySelectorAll('.portal-panel');
+
+  portalTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.panel;
+      portalTabs.forEach(t => t.classList.remove('active'));
+      portalPanels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelector(`.portal-panel[data-panel="${target}"]`).classList.add('active');
+    });
+  });
+
+  /* ── Load documents from Supabase (stub — wire when DB is set up) ─────────
+  async function loadDocs(userId) {
+    const { data, error } = await supabase
+      .from('documents')
+      .select('*')
+      .eq('client_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (!error && data.length) {
+      document.getElementById('docList').innerHTML = data.map(doc => `
+        <a class="doc-item" href="${doc.url}" target="_blank" rel="noopener">
+          <span class="doc-icon">📄</span>
+          <span class="doc-name">${doc.name}</span>
+          <span class="doc-meta">${new Date(doc.created_at).toLocaleDateString()}</span>
+        </a>
+      `).join('');
+    }
+  }
+  */
+
+  init();
+</script>
+</body>
+</html>
