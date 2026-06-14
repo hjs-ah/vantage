@@ -1,0 +1,53 @@
+/* ─── Vantage Labs Design Tokens ─────────────────────────────────────────── */
+/* Palette extracted from logo: hawk mark + wordmark                          */
+
+:root {
+  /* Paper & surfaces */
+  --color-paper:        #FAF8F4;   /* warm off-white ground */
+  --color-surface:      #FFFFFF;
+  --color-surface-2:    #F3F0EA;   /* subtle section alt */
+
+  /* Ink */
+  --color-ink:          #1E1B18;   /* near-black, warm */
+  --color-ink-mid:      #4A4744;   /* wordmark gray  */
+  --color-ink-soft:     #7A746E;   /* secondary text */
+  --color-border:       #E2DDD6;   /* dividers */
+
+  /* Brand — logo browns */
+  --color-primary:      #A0632A;   /* wing body */
+  --color-primary-dark: #6B3D14;   /* underwing shadow */
+  --color-primary-light:#C4893D;   /* highlight tan */
+  --color-primary-soft: #F2E8DC;   /* tinted bg for pills/badges */
+
+  /* Accent — beak yellow, used sparingly */
+  --color-accent:       #F5C518;
+  --color-accent-dark:  #B8920F;
+
+  /* Status */
+  --color-green:        #3B7A4E;
+  --color-green-soft:   #E4EFE6;
+  --color-red:          #C0463C;
+  --color-red-soft:     #F8E7E5;
+
+  /* Typography */
+  --font-sans:  'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono:  'JetBrains Mono', 'Fira Mono', monospace;
+
+  /* Scale */
+  --text-xs:    12px;
+  --text-sm:    13.5px;
+  --text-base:  15px;
+  --text-md:    17px;
+  --text-lg:    22px;
+  --text-xl:    28px;
+  --text-2xl:   36px;
+  --text-3xl:   48px;
+
+  /* Layout */
+  --max-w:      900px;
+  --header-h:   72px;
+  --radius-sm:  6px;
+  --radius-md:  10px;
+  --radius-lg:  16px;
+  --radius-pill:999px;
+}

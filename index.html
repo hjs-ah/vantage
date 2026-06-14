@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Vantage Labs — Career acceleration, coaching stack, and vision clarity consulting for driven professionals, coaches, and founders.">
+  <title>Vantage Labs</title>
+  <link rel="stylesheet" href="./src/styles/main.css">
+</head>
+<body>
+
+<!-- ─── Header ──────────────────────────────────────────────────────────── -->
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="logo">
+      <img src="./public/logo.png" alt="Vantage Labs">
+    </div>
+    <nav class="site-nav">
+      <a href="#lab01">Lab 01</a>
+      <a href="#lab02">Lab 02</a>
+      <a href="#lab03">Lab 03</a>
+      <a href="#how">How it works</a>
+      <a href="#cases">Results</a>
+    </nav>
+    <div class="header-actions">
+      <button class="btn btn-ghost" id="clientLoginBtn">Client login</button>
+      <button class="btn btn-accent-soft" id="qbOpenBtn">Quick book</button>
+    </div>
+  </div>
+</header>
+
+<!-- ─── Hero ─────────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="avail-badge">
+      <span class="avail-dot" id="availDot"></span>
+      <span id="availText">Coaches available today</span>
+    </div>
+    <div class="hero-inner">
+      <h1>See your next move<br>from a <em>higher</em> vantage.</h1>
+      <p class="hero-sub">
+        Hands-on consulting and productized tools for driven professionals,
+        people influencers, and visionary founders — built for where you're going next.
+      </p>
+      <div class="console">
+        <span class="console-prompt">vl&gt;</span>
+        <span id="consoleText"></span>
+        <span class="console-cursor"></span>
+      </div>
+      <div class="hero-actions">
+        <button class="btn btn-dark" id="heroBookBtn">Book a session</button>
+        <a class="btn btn-ghost" href="#lab01">Explore the labs</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Wing-stroke divider -->
+<div class="wing-divider" aria-hidden="true"></div>
+
+<!-- ─── Offerings (tabbed Labs) ───────────────────────────────────────────── -->
+<section class="offerings" id="lab01">
+  <div class="container">
+
+    <div class="tab-bar" role="tablist">
+      <button class="tab-btn active" role="tab" data-tab="lab01" aria-selected="true">
+        Lab 01 — Career Acceleration
+      </button>
+      <button class="tab-btn" role="tab" data-tab="lab02" aria-selected="false" id="lab02">
+        Lab 02 — Coaching Stack
+      </button>
+      <button class="tab-btn" role="tab" data-tab="lab03" aria-selected="false" id="lab03">
+        Lab 03 — Vision Clarity
+      </button>
+    </div>
+
+    <!-- Lab 01 -->
+    <div class="tab-panel active" data-panel="lab01" role="tabpanel">
+      <div class="panel-header">
+        <p class="panel-kicker">For driven employees</p>
+        <h2>Career Acceleration</h2>
+        <p>
+          Get a resume that opens doors, an interview presence that holds the room,
+          and the narrative to talk about your work the way decision-makers actually listen.
+        </p>
+        <div class="panel-tags">
+          <span>Resume critique &amp; refinement</span>
+          <span>Interview prep sessions</span>
+          <span>Narrative framing</span>
+        </div>
+      </div>
+      <div class="tier-grid">
+        <div class="tier-card">
+          <p class="tier-name">Resume critique</p>
+          <p class="tier-price">$125</p>
+          <p class="tier-desc">Written feedback within 48 hours</p>
+          <ul class="tier-features">
+            <li>ATS scan &amp; formatting review</li>
+            <li>Line-by-line written comments</li>
+            <li>Prioritized action list</li>
+          </ul>
+        </div>
+        <div class="tier-card featured">
+          <span class="tier-badge">Most popular</span>
+          <p class="tier-name">Resume refinement</p>
+          <p class="tier-price">$375</p>
+          <p class="tier-desc">Full rewrite + 1 strategy session</p>
+          <ul class="tier-features">
+            <li>Complete rewrite</li>
+            <li>60-min narrative framing session</li>
+            <li>Two rounds of revisions</li>
+          </ul>
+        </div>
+        <div class="tier-card">
+          <p class="tier-name">Acceleration bundle</p>
+          <p class="tier-price">$799</p>
+          <p class="tier-desc">Refinement + full interview prep</p>
+          <ul class="tier-features">
+            <li>Everything in refinement</li>
+            <li>Three interview prep sessions</li>
+            <li>LinkedIn profile pass</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lab 02 -->
+    <div class="tab-panel" data-panel="lab02" role="tabpanel">
+      <div class="panel-header">
+        <p class="panel-kicker">For people influencers &amp; coaches</p>
+        <h2>Coaching Stack</h2>
+        <p>
+          Run your practice on the same infrastructure we use — including an AI assistant
+          trained on your frameworks that supports your clients between sessions.
+          Every higher-tier client gets access to a Vantage Labs–trained agent built around their methodology.
+        </p>
+        <div class="panel-tags">
+          <span>Instructional design templates</span>
+          <span>Agentic AI assistant setup</span>
+          <span>Implementation &amp; onboarding</span>
+        </div>
+      </div>
+      <div class="tier-grid">
+        <div class="tier-card">
+          <p class="tier-name">Stack starter</p>
+          <p class="tier-price">$497</p>
+          <p class="tier-desc">One-time</p>
+          <ul class="tier-features">
+            <li>Instructional design templates</li>
+            <li>Self-guided AI assistant setup guide</li>
+            <li>Email support during setup</li>
+          </ul>
+        </div>
+        <div class="tier-card featured">
+          <span class="tier-badge">Most popular</span>
+          <p class="tier-name">Stack pro</p>
+          <p class="tier-price">$1,997<br>+ $99/mo</p>
+          <p class="tier-desc">Full implementation</p>
+          <ul class="tier-features">
+            <li>1:1 onboarding session</li>
+            <li>Custom AI assistant trained on your materials</li>
+            <li>Ongoing hosting &amp; support</li>
+          </ul>
+        </div>
+        <div class="tier-card">
+          <p class="tier-name">Stack + strategy</p>
+          <p class="tier-price">$1,997<br>+ $249/mo</p>
+          <p class="tier-desc">Pro + ongoing coaching</p>
+          <ul class="tier-features">
+            <li>Everything in Stack Pro</li>
+            <li>Monthly strategy session</li>
+            <li>Quarterly assistant retraining</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lab 03 -->
+    <div class="tab-panel" data-panel="lab03" role="tabpanel">
+      <div class="panel-header">
+        <p class="panel-kicker">For visionaries</p>
+        <h2>Vision Clarity</h2>
+        <p>
+          Before you build, get a clear read on your MVP scope, your stack, and exactly where
+          to place people — your first hire, a contractor, or a fractional lead.
+          We help you deploy human capital as strategically as any other resource.
+        </p>
+        <div class="panel-tags">
+          <span>MVP framing &amp; stack analysis</span>
+          <span>Human capital deployment</span>
+          <span>Business structuring</span>
+        </div>
+      </div>
+      <div class="tier-grid">
+        <div class="tier-card">
+          <p class="tier-name">Framing sprint</p>
+          <p class="tier-price">$2,500</p>
+          <p class="tier-desc">2-week engagement</p>
+          <ul class="tier-features">
+            <li>MVP scope document</li>
+            <li>Stack analysis &amp; recommendations</li>
+            <li>30/60/90-day roadmap</li>
+          </ul>
+        </div>
+        <div class="tier-card">
+          <p class="tier-name">Advisory retainer</p>
+          <p class="tier-price">$1,500/mo</p>
+          <p class="tier-desc">Ongoing guidance</p>
+          <ul class="tier-features">
+            <li>Async support between sessions</li>
+            <li>Monthly strategy session</li>
+            <li>Hiring &amp; deployment guidance as you grow</li>
+          </ul>
+        </div>
+        <div class="tier-card featured">
+          <span class="tier-badge">Most popular</span>
+          <p class="tier-name">Launch package</p>
+          <p class="tier-price">$4,500</p>
+          <p class="tier-desc">Framing + structuring + people plan</p>
+          <ul class="tier-features">
+            <li>Everything in framing sprint</li>
+            <li>Business structuring guidance</li>
+            <li>People deployment plan — hire, contract, or place fractionally</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── How it works ──────────────────────────────────────────────────────── -->
+<section class="how" id="how">
+  <div class="container">
+    <h2 class="section-heading">How it works</h2>
+    <div class="how-grid">
+      <div class="how-step">
+        <span class="step-num">01</span>
+        <h4>Intake</h4>
+        <p>A short form on where you are, where you're headed, and what success looks like in your context.</p>
+      </div>
+      <div class="how-step">
+        <span class="step-num">02</span>
+        <h4>Diagnostic session</h4>
+        <p>A focused live session to map the path — resume, stack, or roadmap, depending on your lab.</p>
+      </div>
+      <div class="how-step">
+        <span class="step-num">03</span>
+        <h4>Delivery</h4>
+        <p>Refined materials, an implemented tool, or a plan you can act on the same day.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Case studies ──────────────────────────────────────────────────────── -->
+<section class="cases" id="cases">
+  <div class="container">
+    <h2 class="section-heading">What clients are saying</h2>
+    <div class="carousel-wrap">
+      <div class="carousel-track-outer">
+        <div class="carousel-track" id="carouselTrack">
+
+          <!-- Slides injected from Notion via JS, fallback placeholders below -->
+          <div class="case-slide">
+            <div class="case-avatar">JM</div>
+            <p class="case-quote">"The narrative framing session changed how I talk about ten years of work in fifteen minutes. I walked into my next interview and finally sounded like the person I am on paper."</p>
+            <p class="case-meta">Jordan M. — <span class="org">Mercer Logistics</span></p>
+          </div>
+
+          <div class="case-slide">
+            <div class="case-avatar">AR</div>
+            <p class="case-quote">"We stood up the coaching stack in under a week. The assistant knows our frameworks — coaches spend their time on the conversation, not repeating themselves."</p>
+            <p class="case-meta">Aliyah R. — <span class="org">Northbound Coaching Collective</span></p>
+          </div>
+
+          <div class="case-slide">
+            <div class="case-avatar">DT</div>
+            <p class="case-quote">"The framing sprint told us exactly what to build first and who we actually needed to hire. We skipped a fractional CTO entirely and saved months."</p>
+            <p class="case-meta">Devon T. — <span class="org">Loop &amp; Lattice</span></p>
+          </div>
+
+        </div>
+      </div>
+      <div class="carousel-controls">
+        <button id="prevCase" aria-label="Previous">&#8592;</button>
+        <button id="nextCase" aria-label="Next">&#8594;</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FAQ ───────────────────────────────────────────────────────────────── -->
+<section class="faq" id="faq">
+  <div class="container">
+    <h2 class="section-heading">Frequently asked questions</h2>
+
+    <details class="faq-item" name="vl-faq">
+      <summary>How do I know which lab is right for me? <span class="faq-toggle">+</span></summary>
+      <p>If you're job searching or angling for a promotion, start with Lab 01. If you coach or develop others professionally, Lab 02. If you're building something new, Lab 03. Quick book and we'll confirm in the intake.</p>
+    </details>
+
+    <details class="faq-item" name="vl-faq">
+      <summary>Can I combine labs? <span class="faq-toggle">+</span></summary>
+      <p>Yes. A common pairing is Vision Clarity for the business and Coaching Stack for the team being built around it. Reach out and we'll scope accordingly.</p>
+    </details>
+
+    <details class="faq-item" name="vl-faq">
+      <summary>What is the agentic AI assistant? <span class="faq-toggle">+</span></summary>
+      <p>It's an AI assistant trained on your specific coaching materials and frameworks — so your clients get consistent, on-brand support between sessions. It's the same infrastructure behind our Chess Not Checkers mentorship program, now productized for other coaches.</p>
+    </details>
+
+    <details class="faq-item" name="vl-faq">
+      <summary>Do you work with teams, not just individuals? <span class="faq-toggle">+</span></summary>
+      <p>Yes. Lab 02 and Lab 03 are both designed to scale from a solo practitioner to a small team. Multi-coach licensing is coming in Phase 2.</p>
+    </details>
+
+  </div>
+</section>
+
+<!-- ─── CTA Band ───────────────────────────────────────────────────────────── -->
+<section class="cta-band">
+  <div class="container">
+    <h2>Ready to get a better view?</h2>
+    <p>Book a session or send a quick note — we follow up within one business day.</p>
+    <button class="btn btn-primary" id="ctaBookBtn">Book a session</button>
+  </div>
+</section>
+
+<!-- ─── Footer ─────────────────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-logo">
+      <img src="./public/logo.png" alt="Vantage Labs">
+    </div>
+    <nav class="footer-nav">
+      <a href="#lab01">Lab 01</a>
+      <a href="#lab02">Lab 02</a>
+      <a href="#lab03">Lab 03</a>
+      <a href="#how">How it works</a>
+      <a href="#cases">Results</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="footer-meta">
+      <a href="/admin">Admin login</a>
+      <span>&copy; 2026 Vantage Labs</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── Quick Book card ────────────────────────────────────────────────────── -->
+<div class="qb-overlay" id="qbOverlay"></div>
+<aside class="qb-card" id="qbCard" role="dialog" aria-label="Quick book">
+  <button class="qb-close" id="qbClose" aria-label="Close">&times;</button>
+  <h3>Quick book</h3>
+  <p class="qb-sub">Tell us what you need and we'll follow up — or grab a time directly.</p>
+  <form class="qb-form" id="qbForm">
+    <div class="qb-field">
+      <label for="qb-name">Name</label>
+      <input type="text" id="qb-name" name="name" required placeholder="Your name">
+    </div>
+    <div class="qb-field">
+      <label for="qb-email">Email</label>
+      <input type="email" id="qb-email" name="email" required placeholder="your@email.com">
+    </div>
+    <div class="qb-field">
+      <label for="qb-track">Which lab fits you?</label>
+      <select id="qb-track" name="track">
+        <option>Lab 01 — Career Acceleration</option>
+        <option>Lab 02 — Coaching Stack</option>
+        <option>Lab 03 — Vision Clarity</option>
+        <option>Not sure yet</option>
+      </select>
+    </div>
+    <div class="qb-field">
+      <label for="qb-msg">Anything else?</label>
+      <textarea id="qb-msg" name="message" rows="2" placeholder="Optional"></textarea>
+    </div>
+    <div class="qb-actions">
+      <button type="button" class="btn btn-ghost" id="qbCancel">Cancel</button>
+      <button type="submit" class="btn btn-dark">Send</button>
+    </div>
+    <div class="qb-confirm" id="qbConfirm">
+      Got it — we'll follow up within one business day.
+    </div>
+  </form>
+  <div class="qb-divider">or</div>
+  <a class="btn btn-ghost qb-calendly" href="https://calendly.com/YOUR_HANDLE" target="_blank" rel="noopener">
+    Book directly via Calendly
+  </a>
+</aside>
+
+<!-- ─── Admin preview (internal — remove before shipping) ─────────────────── -->
+<section class="admin-section" id="admin-preview">
+  <div class="container">
+    <p class="admin-label">Internal — admin control preview</p>
+    <div class="admin-card">
+      <div class="admin-row">
+        <div class="admin-text">
+          <p class="admin-title">Coaches available today</p>
+          <p class="admin-sub" id="adminSub">green — clients can quick-book same-day</p>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="availToggle" checked>
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="./src/main.js"></script>
+</body>
+</html>
