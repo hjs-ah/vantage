@@ -79,7 +79,7 @@ async function loadAvailability() {
     const data = await res.json();
     console.log('[VD] Availability response:', JSON.stringify(data));
     setAvailability(data.available, data.hours);
-    applyHeroImages(data.heroFgImage, data.heroBgImage);
+    applyHeroImages(data);
   } catch (err) {
     console.warn('[VD] /api/availability failed, using fallback:', err);
     const saved      = localStorage.getItem('vd_available');
@@ -98,26 +98,51 @@ function setAvailability(available, hours = 24) {
   }
 }
 
-function applyHeroImages(fgUrl, bgUrl) {
-  console.log('[VD] applyHeroImages — fg:', fgUrl || '(empty)', '| bg:', bgUrl || '(empty)');
+function applyHeroImages(data) {
+  const { heroFgImage1, heroFgImage2, heroFgImage3, heroBgImage, heroFadeSecs } = data;
+  console.log('[VD] applyHeroImages —', { heroFgImage1, heroFgImage2, heroFgImage3, heroBgImage, heroFadeSecs });
 
+  // Background tile
   const bgLayer = document.getElementById('heroBgLayer');
-  const fgImg   = document.getElementById('heroVisualImg');
-
-  if (bgUrl && bgLayer) {
-    bgLayer.style.backgroundImage = `url('${bgUrl}')`;
-    console.log('[VD] Background tile set on #heroBgLayer');
-  } else {
-    console.log('[VD] No background URL — bg layer stays empty');
+  if (heroBgImage && bgLayer) {
+    bgLayer.style.backgroundImage = `url('${heroBgImage}')`;
+    console.log('[VD] Background tile set');
   }
 
-  if (fgUrl && fgImg) {
-    console.log('[VD] Setting foreground image src:', fgUrl);
-    fgImg.src     = fgUrl;
-    fgImg.onload  = () => { console.log('[VD] Foreground image loaded OK'); fgImg.classList.add('loaded'); };
-    fgImg.onerror = () => console.error('[VD] Foreground image FAILED to load — check URL is public:', fgUrl);
-  } else {
-    console.log('[VD] No foreground image URL');
+  // Build list of URLs that are actually provided
+  const urls = [heroFgImage1, heroFgImage2, heroFgImage3].filter(Boolean);
+  if (!urls.length) { console.log('[VD] No foreground images provided'); return; }
+
+  const imgEls = [
+    document.getElementById('heroImg1'),
+    document.getElementById('heroImg2'),
+    document.getElementById('heroImg3'),
+  ];
+
+  // Preload all images, then start rotation
+  let loaded = 0;
+  urls.forEach((url, i) => {
+    if (!imgEls[i]) return;
+    imgEls[i].onload  = () => { loaded++; console.log('[VD] Image', i + 1, 'loaded'); if (loaded === 1) startRotation(); };
+    imgEls[i].onerror = () => console.error('[VD] Image', i + 1, 'failed to load:', url);
+    imgEls[i].src = url;
+  });
+
+  let current = 0;
+  const secs  = Math.max(1, heroFadeSecs || 4);
+
+  function startRotation() {
+    // Show first image immediately
+    imgEls[0]?.classList.add('visible');
+
+    if (urls.length === 1) return; // only one image — no rotation needed
+
+    setInterval(() => {
+      const next = (current + 1) % urls.length;
+      imgEls[current]?.classList.remove('visible');
+      imgEls[next]?.classList.add('visible');
+      current = next;
+    }, secs * 1000);
   }
 }
 

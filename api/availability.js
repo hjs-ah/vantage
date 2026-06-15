@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=30');
 
-  const defaults = { available: true, hours: 24, heroFgImage: '', heroBgImage: '' };
+  const defaults = { available: true, hours: 24, heroFgImage1: '', heroFgImage2: '', heroFgImage3: '', heroBgImage: '', heroFadeSecs: 4 };
 
   try {
     if (!process.env.NOTION_SECRET || !process.env.NOTION_SETTINGS_DB_ID) {
@@ -39,10 +39,13 @@ export default async function handler(req, res) {
 
     const p = page.properties;
     return res.status(200).json({
-      available:    p?.Available?.checkbox          ?? true,
-      hours:        p?.Hours?.number                ?? 24,
-      heroFgImage:  p?.HeroFgImage?.url             ?? '',
-      heroBgImage:  p?.HeroBgImage?.url             ?? '',
+      available:    p?.Available?.checkbox   ?? true,
+      hours:        p?.Hours?.number         ?? 24,
+      heroFgImage1: p?.HeroFgImage1?.url     ?? '',
+      heroFgImage2: p?.HeroFgImage2?.url     ?? '',
+      heroFgImage3: p?.HeroFgImage3?.url     ?? '',
+      heroBgImage:  p?.HeroBgImage?.url      ?? '',
+      heroFadeSecs: p?.HeroFadeSecs?.number  ?? 4,
     });
 
   } catch (err) {

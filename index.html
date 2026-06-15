@@ -34,23 +34,23 @@
 <!-- ─── Hero ─────────────────────────────────────────────────────────────── -->
 <section class="hero" id="hero-section">
 
-  <!-- Layer 0: background tile — right half, set via Notion -->
-  <div class="hero-bg-layer" id="heroBgLayer"></div>
-
-  <!-- Layer 1: foreground image — full hero height, right half, set via Notion -->
-  <div class="hero-fg-layer" id="heroFgLayer">
-    <img id="heroVisualImg" src="" alt="" aria-hidden="true">
+  <!-- Constrained layer wrapper — matches 900px content column exactly -->
+  <div class="hero-layers">
+    <div class="hero-bg-layer" id="heroBgLayer"></div>
+    <div class="hero-fg-layer" id="heroFgLayer">
+      <img class="hero-fg-img" id="heroImg1" src="" alt="" aria-hidden="true">
+      <img class="hero-fg-img" id="heroImg2" src="" alt="" aria-hidden="true">
+      <img class="hero-fg-img" id="heroImg3" src="" alt="" aria-hidden="true">
+    </div>
   </div>
 
-  <!-- Layer 2: content grid -->
+  <!-- Content grid — z-index above layers -->
   <div class="container">
     <div class="hero-layout">
-
-      <!-- Left: text content -->
       <div class="hero-content">
         <div class="avail-badge">
           <span class="avail-dot" id="availDot"></span>
-          <span id="availText">Coaching available within <span id="availHours">24</span> hours</span>
+          <span id="availText">Coaching available within <strong>24</strong> hours</span>
         </div>
         <h1>See your next move<br>from a <em>higher</em> vantage.</h1>
         <p class="hero-sub">
@@ -67,12 +67,10 @@
           <a class="btn btn-ghost" href="#lab01">Explore the labs</a>
         </div>
       </div>
-
-      <!-- Right: transparent spacer — holds grid column, image is behind via absolute -->
       <div class="hero-visual" aria-hidden="true"></div>
-
     </div>
   </div>
+
 </section>
 
 <!-- Section divider -->
