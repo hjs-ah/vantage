@@ -34,13 +34,29 @@
 <!-- ─── Hero ─────────────────────────────────────────────────────────────── -->
 <section class="hero" id="hero-section">
 
-  <!-- Constrained layer wrapper — matches 900px content column exactly -->
+  <!-- Constrained layer wrapper -->
   <div class="hero-layers">
+    <!-- Background tile — right half only -->
     <div class="hero-bg-layer" id="heroBgLayer"></div>
+
+    <!-- Three floating image+bubble slots, stacked, fade between them -->
     <div class="hero-fg-layer" id="heroFgLayer">
-      <img class="hero-fg-img" id="heroImg1" src="" alt="" aria-hidden="true">
-      <img class="hero-fg-img" id="heroImg2" src="" alt="" aria-hidden="true">
-      <img class="hero-fg-img" id="heroImg3" src="" alt="" aria-hidden="true">
+
+      <div class="hero-slide" id="heroSlide1">
+        <img class="hero-slide-img" id="heroImg1" src="" alt="" aria-hidden="true">
+        <div class="hero-bubble" id="heroBubble1"></div>
+      </div>
+
+      <div class="hero-slide" id="heroSlide2">
+        <img class="hero-slide-img" id="heroImg2" src="" alt="" aria-hidden="true">
+        <div class="hero-bubble" id="heroBubble2"></div>
+      </div>
+
+      <div class="hero-slide" id="heroSlide3">
+        <img class="hero-slide-img" id="heroImg3" src="" alt="" aria-hidden="true">
+        <div class="hero-bubble" id="heroBubble3"></div>
+      </div>
+
     </div>
   </div>
 

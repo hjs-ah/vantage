@@ -99,49 +99,69 @@ function setAvailability(available, hours = 24) {
 }
 
 function applyHeroImages(data) {
-  const { heroFgImage1, heroFgImage2, heroFgImage3, heroBgImage, heroFadeSecs } = data;
-  console.log('[VD] applyHeroImages —', { heroFgImage1, heroFgImage2, heroFgImage3, heroBgImage, heroFadeSecs });
+  const { heroFgImage1, heroFgImage2, heroFgImage3,
+          heroBgImage, heroFadeSecs,
+          heroBubble1, heroBubble2, heroBubble3 } = data;
+
+  console.log('[VD] applyHeroImages', { heroFgImage1, heroFgImage2, heroFgImage3, heroBgImage, heroFadeSecs });
 
   // Background tile
   const bgLayer = document.getElementById('heroBgLayer');
   if (heroBgImage && bgLayer) {
     bgLayer.style.backgroundImage = `url('${heroBgImage}')`;
-    console.log('[VD] Background tile set');
   }
 
-  // Build list of URLs that are actually provided
-  const urls = [heroFgImage1, heroFgImage2, heroFgImage3].filter(Boolean);
-  if (!urls.length) { console.log('[VD] No foreground images provided'); return; }
+  // Build slots array — only include slots with an image URL
+  const slots = [
+    { imgId: 'heroImg1', slideId: 'heroSlide1', bubbleId: 'heroBubble1', url: heroFgImage1, text: heroBubble1 },
+    { imgId: 'heroImg2', slideId: 'heroSlide2', bubbleId: 'heroBubble2', url: heroFgImage2, text: heroBubble2 },
+    { imgId: 'heroImg3', slideId: 'heroSlide3', bubbleId: 'heroBubble3', url: heroFgImage3, text: heroBubble3 },
+  ].filter(s => s.url);
 
-  const imgEls = [
-    document.getElementById('heroImg1'),
-    document.getElementById('heroImg2'),
-    document.getElementById('heroImg3'),
-  ];
+  if (!slots.length) { console.log('[VD] No foreground images provided'); return; }
 
-  // Preload all images, then start rotation
-  let loaded = 0;
-  urls.forEach((url, i) => {
-    if (!imgEls[i]) return;
-    imgEls[i].onload  = () => { loaded++; console.log('[VD] Image', i + 1, 'loaded'); if (loaded === 1) startRotation(); };
-    imgEls[i].onerror = () => console.error('[VD] Image', i + 1, 'failed to load:', url);
-    imgEls[i].src = url;
+  const secs = Math.max(1, heroFadeSecs || 4);
+  let current = 0;
+  let loadedCount = 0;
+
+  slots.forEach((slot, i) => {
+    const img    = document.getElementById(slot.imgId);
+    const bubble = document.getElementById(slot.bubbleId);
+
+    // Set bubble text
+    if (bubble) {
+      if (slot.text) {
+        bubble.textContent = slot.text;
+        bubble.classList.add('has-text');
+      } else {
+        bubble.classList.remove('has-text');
+      }
+    }
+
+    // Load image
+    if (img) {
+      img.onload = () => {
+        loadedCount++;
+        console.log(`[VD] Image ${i + 1} loaded`);
+        if (loadedCount === 1) startRotation();
+      };
+      img.onerror = () => console.error(`[VD] Image ${i + 1} failed:`, slot.url);
+      img.src = slot.url;
+    }
   });
 
-  let current = 0;
-  const secs  = Math.max(1, heroFadeSecs || 4);
-
   function startRotation() {
-    // Show first image immediately
-    imgEls[0]?.classList.add('visible');
+    // Show first slide
+    const firstSlide = document.getElementById(slots[0].slideId);
+    firstSlide?.classList.add('visible');
 
-    if (urls.length === 1) return; // only one image — no rotation needed
+    if (slots.length === 1) return;
 
     setInterval(() => {
-      const next = (current + 1) % urls.length;
-      imgEls[current]?.classList.remove('visible');
-      imgEls[next]?.classList.add('visible');
-      current = next;
+      const prev = current;
+      current    = (current + 1) % slots.length;
+      document.getElementById(slots[prev].slideId)?.classList.remove('visible');
+      document.getElementById(slots[current].slideId)?.classList.add('visible');
     }, secs * 1000);
   }
 }
