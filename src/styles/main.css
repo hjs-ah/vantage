@@ -146,7 +146,7 @@ button { font-family: var(--font-sans); cursor: pointer; }
 .hero-layout {
   display: grid;
   grid-template-columns: 1fr 360px;
-  gap: 48px;
+  gap: 10px;
   align-items: center;
 }
 
