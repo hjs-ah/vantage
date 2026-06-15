@@ -74,11 +74,14 @@ const availText = document.getElementById('availText');
 
 async function loadAvailability() {
   try {
+    console.log('[VD] Fetching /api/availability...');
     const res  = await fetch('/api/availability');
     const data = await res.json();
+    console.log('[VD] Availability response:', data);
     setAvailability(data.available, data.hours);
     applyHeroImages(data.heroFgImage, data.heroBgImage);
-  } catch {
+  } catch (err) {
+    console.warn('[VD] /api/availability failed, using fallback:', err);
     const saved      = localStorage.getItem('vd_available');
     const savedHours = localStorage.getItem('vd_hours');
     setAvailability(saved !== '0', parseInt(savedHours) || 24);
@@ -96,20 +99,26 @@ function setAvailability(available, hours = 24) {
 }
 
 function applyHeroImages(fgUrl, bgUrl) {
+  console.log('[VD] applyHeroImages — fg:', fgUrl || '(empty)', '| bg:', bgUrl || '(empty)');
   const visual = document.getElementById('heroVisual');
   const img    = document.getElementById('heroVisualImg');
 
   if (bgUrl && visual) {
     visual.style.backgroundImage = `url('${bgUrl}')`;
+    console.log('[VD] Background image set on #heroVisual');
+  } else {
+    console.log('[VD] No background image URL — skipping');
   }
 
   if (fgUrl && img) {
+    console.log('[VD] Setting foreground image src:', fgUrl);
     img.src = fgUrl;
-    img.onload = () => img.classList.add('loaded');
+    img.onload  = () => { console.log('[VD] Foreground image loaded OK'); img.classList.add('loaded'); };
+    img.onerror = () => console.error('[VD] Foreground image FAILED to load — check URL is publicly accessible:', fgUrl);
     img.alt = 'Vantage Delta';
-  } else if (img) {
-    // No image set yet — hide the visual panel gracefully
-    img.style.display = 'none';
+  } else {
+    console.log('[VD] No foreground image URL — hiding panel image');
+    if (img) img.style.display = 'none';
   }
 }
 
@@ -138,30 +147,6 @@ function closeQB() {
 document.getElementById('qbClose')?.addEventListener('click', closeQB);
 document.getElementById('qbCancel')?.addEventListener('click', closeQB);
 qbOverlay?.addEventListener('click', closeQB);
-
-qbForm?.addEventListener('submit', e => {
-  e.preventDefault();
-
-  /* ── Wire to HubSpot form embed here when ready ──────────────────────── */
-  /* 
-     Example HubSpot fetch call:
-     const data = Object.fromEntries(new FormData(qbForm));
-     fetch('https://api.hsforms.com/submissions/v3/integration/submit/YOUR_PORTAL/YOUR_FORM_GUID', {
-       method: 'POST',
-       headers: { 'Content-Type': 'application/json' },
-       body: JSON.stringify({
-         fields: [
-           { name: 'firstname', value: data.name },
-           { name: 'email',     value: data.email },
-           { name: 'message',   value: data.track + ' — ' + data.message }
-         ]
-       })
-     });
-  */
-
-  qbConfirm.classList.add('show');
-  qbForm.reset();
-});
 
 /* ── 7. Notion case study integration ───────────────────────────────────── */
 /*

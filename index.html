@@ -366,6 +366,7 @@
   <h3>Quick book</h3>
   <p class="qb-sub">Tell us what you need and we'll follow up within one business day.</p>
   <div id="qbFormWrap">
+    <div id="qbFormLoading">Loading form…</div>
     <div id="hbspt-form-target"></div>
   </div>
 </aside>
@@ -383,7 +384,11 @@
           region: "na2",
           portalId: "246483124",
           formId: "dcd3683c-7e55-4ae4-b282-bf4c3a5fb9b4",
-          target: "#hbspt-form-target"
+          target: "#hbspt-form-target",
+          onFormReady: function() {
+            const loader = document.getElementById('qbFormLoading');
+            if (loader) loader.style.display = 'none';
+          }
         });
         hsFormLoaded = true;
       } else {

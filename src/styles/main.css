@@ -623,14 +623,26 @@ details[open] .faq-toggle { transform: rotate(45deg); }
   border-radius: 50%;
   border: 1px solid var(--color-border);
   background: transparent;
-  font-size: 16px;
+  font-size: 18px;
+  line-height: 1;
   color: var(--color-ink);
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
+  cursor: pointer;
   transition: border-color 0.15s;
 }
 .qb-close:hover { border-color: var(--color-ink-mid); }
+
+/* Loading placeholder */
+#qbFormLoading {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-ink-soft);
+  padding: 20px 0 8px;
+  letter-spacing: 0.04em;
+}
 
 .qb-card h3 { font-size: var(--text-lg); font-weight: 800; margin-bottom: 6px; }
 .qb-sub { font-size: var(--text-sm); color: var(--color-ink-soft); line-height: 1.55; margin-bottom: 22px; }
