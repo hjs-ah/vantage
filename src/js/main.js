@@ -111,11 +111,28 @@ function applyHeroImages(data) {
     bgLayer.style.backgroundImage = `url('${heroBgImage}')`;
   }
 
-  // Build slots array — only include slots with an image URL
+  // Set bubble text — bubbles are always in the DOM, shown/hidden by class
+  const bubbleData = [
+    { id: 'heroBubble1', text: heroBubble1 },
+    { id: 'heroBubble2', text: heroBubble2 },
+    { id: 'heroBubble3', text: heroBubble3 },
+  ];
+  bubbleData.forEach(b => {
+    const el = document.getElementById(b.id);
+    if (!el) return;
+    if (b.text) {
+      el.textContent = b.text;
+      el.classList.add('has-text');
+    } else {
+      el.classList.remove('has-text');
+    }
+  });
+
+  // Build slots — only those with image URLs
   const slots = [
-    { imgId: 'heroImg1', slideId: 'heroSlide1', bubbleId: 'heroBubble1', url: heroFgImage1, text: heroBubble1 },
-    { imgId: 'heroImg2', slideId: 'heroSlide2', bubbleId: 'heroBubble2', url: heroFgImage2, text: heroBubble2 },
-    { imgId: 'heroImg3', slideId: 'heroSlide3', bubbleId: 'heroBubble3', url: heroFgImage3, text: heroBubble3 },
+    { slideId: 'heroSlide1', imgId: 'heroImg1', bubbleId: 'heroBubble1', url: heroFgImage1 },
+    { slideId: 'heroSlide2', imgId: 'heroImg2', bubbleId: 'heroBubble2', url: heroFgImage2 },
+    { slideId: 'heroSlide3', imgId: 'heroImg3', bubbleId: 'heroBubble3', url: heroFgImage3 },
   ].filter(s => s.url);
 
   if (!slots.length) { console.log('[VD] No foreground images provided'); return; }
@@ -125,43 +142,39 @@ function applyHeroImages(data) {
   let loadedCount = 0;
 
   slots.forEach((slot, i) => {
-    const img    = document.getElementById(slot.imgId);
-    const bubble = document.getElementById(slot.bubbleId);
-
-    // Set bubble text
-    if (bubble) {
-      if (slot.text) {
-        bubble.textContent = slot.text;
-        bubble.classList.add('has-text');
-      } else {
-        bubble.classList.remove('has-text');
-      }
-    }
-
-    // Load image
-    if (img) {
-      img.onload = () => {
-        loadedCount++;
-        console.log(`[VD] Image ${i + 1} loaded`);
-        if (loadedCount === 1) startRotation();
-      };
-      img.onerror = () => console.error(`[VD] Image ${i + 1} failed:`, slot.url);
-      img.src = slot.url;
-    }
+    const img = document.getElementById(slot.imgId);
+    if (!img) return;
+    img.onload  = () => { loadedCount++; console.log(`[VD] Image ${i+1} loaded`); if (loadedCount === 1) startRotation(); };
+    img.onerror = () => console.error(`[VD] Image ${i+1} failed:`, slot.url);
+    img.src = slot.url;
   });
 
-  function startRotation() {
-    // Show first slide
-    const firstSlide = document.getElementById(slots[0].slideId);
-    firstSlide?.classList.add('visible');
+  function showSlot(idx) {
+    const slide  = document.getElementById(slots[idx].slideId);
+    const bubble = document.getElementById(slots[idx].bubbleId);
+    slide?.classList.add('visible');
+    // Bubble fades in slightly after the image (staggered for effect)
+    if (bubble?.classList.contains('has-text')) {
+      setTimeout(() => bubble.classList.add('visible'), 300);
+    }
+  }
 
+  function hideSlot(idx) {
+    const slide  = document.getElementById(slots[idx].slideId);
+    const bubble = document.getElementById(slots[idx].bubbleId);
+    slide?.classList.remove('visible');
+    bubble?.classList.remove('visible');
+  }
+
+  function startRotation() {
+    showSlot(0);
     if (slots.length === 1) return;
 
     setInterval(() => {
       const prev = current;
       current    = (current + 1) % slots.length;
-      document.getElementById(slots[prev].slideId)?.classList.remove('visible');
-      document.getElementById(slots[current].slideId)?.classList.add('visible');
+      hideSlot(prev);
+      showSlot(current);
     }, secs * 1000);
   }
 }

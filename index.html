@@ -36,31 +36,33 @@
 
   <!-- Constrained layer wrapper -->
   <div class="hero-layers">
-    <!-- Background tile — right half only -->
+
+    <!-- Layer 0: background tile — right half -->
     <div class="hero-bg-layer" id="heroBgLayer"></div>
 
-    <!-- Three floating image+bubble slots, stacked, fade between them -->
+    <!-- Layer 1: foreground images — full cover, fade between -->
     <div class="hero-fg-layer" id="heroFgLayer">
-
       <div class="hero-slide" id="heroSlide1">
         <img class="hero-slide-img" id="heroImg1" src="" alt="" aria-hidden="true">
-        <div class="hero-bubble" id="heroBubble1"></div>
       </div>
-
       <div class="hero-slide" id="heroSlide2">
         <img class="hero-slide-img" id="heroImg2" src="" alt="" aria-hidden="true">
-        <div class="hero-bubble" id="heroBubble2"></div>
       </div>
-
       <div class="hero-slide" id="heroSlide3">
         <img class="hero-slide-img" id="heroImg3" src="" alt="" aria-hidden="true">
-        <div class="hero-bubble" id="heroBubble3"></div>
       </div>
-
     </div>
+
+    <!-- Layer 3: bubbles — independent, inspectable, positionable per bubble -->
+    <div class="hero-bubbles">
+      <div class="hero-bubble" id="heroBubble1"></div>
+      <div class="hero-bubble" id="heroBubble2"></div>
+      <div class="hero-bubble" id="heroBubble3"></div>
+    </div>
+
   </div>
 
-  <!-- Content grid — z-index above layers -->
+  <!-- Content grid -->
   <div class="container">
     <div class="hero-layout">
       <div class="hero-content">

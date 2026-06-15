@@ -170,7 +170,7 @@ button { font-family: var(--font-sans); cursor: pointer; }
   background-position: left center;
 }
 
-/* Foreground image slots — floating cards, stacked, fade between */
+/* Foreground image slots — full height cover, stacked, fade between */
 .hero-fg-layer {
   position: absolute;
   top: 0;
@@ -178,54 +178,110 @@ button { font-family: var(--font-sans); cursor: pointer; }
   width: 50%;
   height: 100%;
   z-index: 1;
-  pointer-events: none;
+  pointer-events: none; /* images don't intercept clicks */
 }
 
-/* Each slide is a full-size container for the image + bubble */
 .hero-slide {
   position: absolute;
   inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: flex-end;
-  padding: 24px 16px 32px;
   opacity: 0;
   transition: opacity 0.8s ease;
 }
 .hero-slide.visible { opacity: 1; }
 
-/* The person image — floats naturally at bottom-right, no cover fill */
 .hero-slide-img {
   display: block;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: auto;
-  height: 92%;
-  max-height: 520px;
-  object-fit: contain;
-  object-position: bottom right;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
 }
 
-/* Quote bubble — positioned at lower-left of the fg layer, above image */
+/* ── Bubbles — independent floating elements, pointer-events on ──────────── */
+/* Each bubble is absolutely positioned within .hero-layers (NOT .hero-fg-layer)
+   so they sit above both the bg and fg layers and are fully inspectable.
+   Adjust top/right/bottom/left per bubble to reposition.                    */
+
+.hero-bubbles {
+  position: absolute;
+  inset: 0;
+  z-index: 3; /* above fg images (z:1) and content grid (z:2) on right side */
+  pointer-events: none;
+}
+
+/* Shared bubble styles */
 .hero-bubble {
   position: absolute;
-  bottom: 28px;
-  left: 0;
-  max-width: 220px;
+  max-width: 200px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  padding: 12px 14px;
-  font-size: 12.5px;
+  padding: 11px 14px;
+  font-size: 12px;
+  font-style: italic;
   font-weight: 600;
   line-height: 1.5;
   color: var(--color-primary-dark);
-  box-shadow: 0 4px 16px rgba(30,27,24,0.10);
-  display: none; /* shown only when text is set */
+  box-shadow: 0 4px 20px rgba(30,27,24,0.12);
+  display: none;
+  pointer-events: auto;
+
+  /* Fade in from the right */
+  opacity: 0;
+  transform: translateX(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
 }
-.hero-bubble.has-text { display: block; }
+.hero-bubble.has-text  { display: block; }
+.hero-bubble.visible   { opacity: 1; transform: translateX(0); }
+
+/* Floating animation — gentle circular drift */
+@keyframes floatBubble1 {
+  0%   { translate: 0px 0px; }
+  25%  { translate: 4px -5px; }
+  50%  { translate: 7px 2px; }
+  75%  { translate: 3px 6px; }
+  100% { translate: 0px 0px; }
+}
+@keyframes floatBubble2 {
+  0%   { translate: 0px 0px; }
+  25%  { translate: -5px 4px; }
+  50%  { translate: -2px 7px; }
+  75%  { translate: 4px 3px; }
+  100% { translate: 0px 0px; }
+}
+@keyframes floatBubble3 {
+  0%   { translate: 0px 0px; }
+  25%  { translate: 3px 5px; }
+  50%  { translate: -4px 3px; }
+  75%  { translate: -5px -4px; }
+  100% { translate: 0px 0px; }
+}
+
+/* ── Bubble 1 position — adjust top/right/bottom/left to reposition ── */
+#heroBubble1 {
+  bottom: 36%;
+  left: 2%;
+  animation: floatBubble1 6s ease-in-out infinite;
+}
+
+/* ── Bubble 2 position — adjust top/right/bottom/left to reposition ── */
+#heroBubble2 {
+  bottom: 36%;
+  left: 2%;
+  animation: floatBubble2 7s ease-in-out infinite;
+}
+
+/* ── Bubble 3 position — adjust top/right/bottom/left to reposition ── */
+#heroBubble3 {
+  bottom: 36%;
+  left: 2%;
+  animation: floatBubble3 8s ease-in-out infinite;
+}
+
+/* Mobile — hide bubbles, they'd be too cluttered */
+@media (max-width: 860px) {
+  .hero-bubbles { display: none; }
+}
 
 /* Content grid — above the image layers */
 .hero-layout {
