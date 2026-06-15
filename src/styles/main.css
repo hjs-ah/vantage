@@ -259,22 +259,22 @@ button { font-family: var(--font-sans); cursor: pointer; }
 
 /* ── Bubble 1 position — adjust top/right/bottom/left to reposition ── */
 #heroBubble1 {
-  bottom: 36%;
-  left: 2%;
+  bottom: 16%;
+  left: 76%;
   animation: floatBubble1 6s ease-in-out infinite;
 }
 
 /* ── Bubble 2 position — adjust top/right/bottom/left to reposition ── */
 #heroBubble2 {
-  bottom: 36%;
-  left: 2%;
+  bottom: 16%;
+  left: 62%;
   animation: floatBubble2 7s ease-in-out infinite;
 }
 
 /* ── Bubble 3 position — adjust top/right/bottom/left to reposition ── */
 #heroBubble3 {
-  bottom: 36%;
-  left: 2%;
+  bottom: 26%;
+  left: 62%;
   animation: floatBubble3 8s ease-in-out infinite;
 }
 
