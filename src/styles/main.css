@@ -635,15 +635,6 @@ details[open] .faq-toggle { transform: rotate(45deg); }
 }
 .qb-close:hover { border-color: var(--color-ink-mid); }
 
-/* Loading placeholder */
-#qbFormLoading {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--color-ink-soft);
-  padding: 20px 0 8px;
-  letter-spacing: 0.04em;
-}
-
 .qb-card h3 { font-size: var(--text-lg); font-weight: 800; margin-bottom: 6px; }
 .qb-sub { font-size: var(--text-sm); color: var(--color-ink-soft); line-height: 1.55; margin-bottom: 22px; }
 

@@ -77,7 +77,7 @@ async function loadAvailability() {
     console.log('[VD] Fetching /api/availability...');
     const res  = await fetch('/api/availability');
     const data = await res.json();
-    console.log('[VD] Availability response:', data);
+    console.log('[VD] Availability response:', JSON.stringify(data));
     setAvailability(data.available, data.hours);
     applyHeroImages(data.heroFgImage, data.heroBgImage);
   } catch (err) {
