@@ -105,10 +105,11 @@ function applyHeroImages(data) {
 
   console.log('[VD] applyHeroImages', { heroFgImage1, heroFgImage2, heroFgImage3, heroBgImage, heroFadeSecs });
 
-  // Background tile — set on body so it spans the entire page
-  if (heroBgImage) {
-    document.body.style.backgroundImage = `url('${heroBgImage}')`;
-    console.log('[VD] Body background tile set');
+  // Background tile — full-width strip at bottom of hero section
+  const bgLayer = document.getElementById('heroBgLayer');
+  if (heroBgImage && bgLayer) {
+    bgLayer.style.backgroundImage = `url('${heroBgImage}')`;
+    console.log('[VD] Hero background tile set');
   }
 
   // Set bubble text — bubbles are always in the DOM, shown/hidden by class

@@ -7,11 +7,7 @@ html { scroll-behavior: smooth; }
 body {
   font-family: var(--font-sans);
   font-size: var(--text-base);
-  background-color: var(--color-paper);
-  background-repeat: repeat-x;
-  background-size: auto 165px;
-  background-position: left bottom;
-  background-attachment: fixed;
+  background: var(--color-paper);
   color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
   line-height: 1.5;
@@ -161,8 +157,19 @@ button { font-family: var(--font-sans); cursor: pointer; }
   pointer-events: none;
 }
 
-/* Background tile is now on body — this layer kept for JS compatibility only */
-.hero-bg-layer { display: none; }
+/* Background tile — full hero width, fixed 165px strip at bottom */
+.hero-bg-layer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 165px;
+  z-index: 0;
+  background-repeat: repeat-x;
+  background-size: auto 165px;
+  background-position: left bottom;
+  pointer-events: none;
+}
 
 /* Foreground image slots — full height cover, stacked, fade between */
 .hero-fg-layer {
