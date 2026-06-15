@@ -178,7 +178,7 @@ button { font-family: var(--font-sans); cursor: pointer; }
   height: 480px;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  background-color: var(--color-surface-2);
+  background-color: #faf8f4;
   /* background-image set via JS from Notion CMS */
   background-repeat: repeat-x;
   background-size: auto 100%;
