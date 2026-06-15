@@ -271,23 +271,32 @@ button { font-family: var(--font-sans); cursor: pointer; }
   display: flex;
   border-bottom: 1px solid var(--color-border);
   margin-bottom: 40px;
+  gap: 4px;
 }
 .tab-btn {
   flex: 1;
-  background: none;
+  background: transparent;
   border: none;
   border-bottom: 2px solid transparent;
-  padding: 14px 8px;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  padding: 12px 8px;
   font-size: var(--text-sm);
   font-weight: 600;
   color: var(--color-ink-soft);
-  transition: color 0.15s, border-color 0.15s;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
   margin-bottom: -1px;
+  text-align: center;
 }
-.tab-btn:hover { color: var(--color-ink); }
+.tab-btn:hover {
+  color: var(--color-ink);
+  background: var(--color-surface-2);
+}
 .tab-btn.active {
   color: var(--color-ink);
   border-bottom-color: var(--color-accent);
+  background: var(--color-surface-2);
 }
 
 .tab-panel { display: none; }
@@ -768,9 +777,13 @@ details[open] .faq-toggle { transform: rotate(45deg); }
   :root { --text-3xl: 34px; --text-2xl: 26px; }
   .site-nav { display: none; }
   .tier-grid, .how-grid { grid-template-columns: 1fr; }
-  .tab-bar { flex-direction: column; border-bottom: none; }
-  .tab-btn { border-bottom: 1px solid var(--color-border); border-left: 2px solid transparent; text-align: left; margin-bottom: 0; }
-  .tab-btn.active { border-bottom-color: var(--color-border); border-left-color: var(--color-accent); }
+  .tab-bar {
+    gap: 2px;
+  }
+  .tab-btn {
+    font-size: 11px;
+    padding: 10px 4px;
+  }
   .case-slide { padding: 0 24px; }
   .qb-card { width: 90vw; right: -95vw; height: min(630px, 85vh); }
   .qb-card.open { right: 5vw; }
@@ -884,4 +897,114 @@ details[open] .faq-toggle { transform: rotate(45deg); }
   font-family: var(--font-sans) !important;
   font-size: 11px !important;
   color: var(--color-ink-soft) !important;
+}
+
+/* ─── Footer privacy link ─────────────────────────────────────────────────── */
+.footer-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+.privacy-link {
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  color: var(--color-ink-soft);
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s;
+}
+.privacy-link:hover { color: var(--color-ink); }
+
+/* ─── Privacy modal ───────────────────────────────────────────────────────── */
+.privacy-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 27, 24, 0.5);
+  z-index: 300;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+.privacy-overlay.open { opacity: 1; visibility: visible; }
+
+.privacy-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.97);
+  width: min(640px, 92vw);
+  max-height: 80vh;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  z-index: 301;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+}
+.privacy-modal.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.privacy-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+.privacy-modal-header h3 {
+  font-size: var(--text-base);
+  font-weight: 700;
+  margin: 0;
+}
+.privacy-close {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--color-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.privacy-close:hover { border-color: var(--color-ink-mid); }
+
+.privacy-modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+.privacy-updated {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-ink-soft);
+  margin-bottom: 20px;
+}
+.privacy-modal-body h4 {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  margin: 20px 0 6px;
+}
+.privacy-modal-body h4:first-of-type { margin-top: 0; }
+.privacy-modal-body p {
+  font-size: var(--text-sm);
+  color: var(--color-ink-soft);
+  line-height: 1.7;
+  margin: 0;
 }

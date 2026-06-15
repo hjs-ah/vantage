@@ -206,3 +206,23 @@ document.getElementById('clientLoginBtn')?.addEventListener('click', () => {
   /* Replace with redirect to /login or auth provider when ready */
   alert('Client portal coming soon.');
 });
+
+/* ── Privacy modal ───────────────────────────────────────────────────────── */
+const privacyOverlay = document.getElementById('privacyOverlay');
+const privacyModal   = document.getElementById('privacyModal');
+
+function openPrivacy() {
+  privacyOverlay.classList.add('open');
+  privacyModal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closePrivacy() {
+  privacyOverlay.classList.remove('open');
+  privacyModal.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('privacyBtn')?.addEventListener('click', openPrivacy);
+document.getElementById('privacyClose')?.addEventListener('click', closePrivacy);
+privacyOverlay?.addEventListener('click', closePrivacy);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePrivacy(); });

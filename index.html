@@ -351,19 +351,44 @@
     <div class="footer-logo">
       <img src="./public/logo.png" alt="Vantage Delta">
     </div>
-    <nav class="footer-nav">
-      <a href="#lab01">Lab 01</a>
-      <a href="#lab02">Lab 02</a>
-      <a href="#lab03">Lab 03</a>
-      <a href="#how">How it works</a>
-      <a href="#cases">Results</a>
-      <a href="#faq">FAQ</a>
-    </nav>
+    <div class="footer-center">
+      <button class="privacy-link" id="privacyBtn">Privacy policy</button>
+    </div>
     <div class="footer-meta">
       <span>&copy; 2026 Vantage Delta</span>
     </div>
   </div>
 </footer>
+
+<!-- ─── Privacy Policy modal ──────────────────────────────────────────────── -->
+<div class="privacy-overlay" id="privacyOverlay"></div>
+<div class="privacy-modal" id="privacyModal" role="dialog" aria-label="Privacy policy">
+  <div class="privacy-modal-header">
+    <h3>Privacy policy</h3>
+    <button class="privacy-close" id="privacyClose" aria-label="Close">&times;</button>
+  </div>
+  <div class="privacy-modal-body">
+    <p class="privacy-updated">Last updated: June 2026</p>
+
+    <h4>Information we collect</h4>
+    <p>When you use our Quick Book form, we collect your name, email address, and any details you choose to share about your goals. This information is submitted to and stored in HubSpot CRM for the sole purpose of responding to your inquiry.</p>
+
+    <h4>How we use your information</h4>
+    <p>We use your contact information only to respond to your inquiry and, with your consent, to send you relevant updates about Vantage Delta services. We do not sell, rent, or share your personal information with third parties for marketing purposes.</p>
+
+    <h4>Cookies and analytics</h4>
+    <p>This site may use cookies to understand how visitors interact with our pages. No personally identifiable information is collected through cookies without your explicit consent.</p>
+
+    <h4>Third-party services</h4>
+    <p>We use HubSpot for form submissions and contact management, Calendly for session scheduling, and Vercel for site hosting. Each of these services maintains their own privacy policies governing data they process on our behalf.</p>
+
+    <h4>Your rights</h4>
+    <p>You may request access to, correction of, or deletion of your personal data at any time by contacting us directly. We will respond within 30 days.</p>
+
+    <h4>Contact</h4>
+    <p>For any privacy-related questions, please reach out via the Quick Book form or directly through your coach.</p>
+  </div>
+</div>
 
 <!-- ─── Quick Book card ────────────────────────────────────────────────────── -->
 <div class="qb-overlay" id="qbOverlay"></div>
