@@ -138,20 +138,63 @@ button { font-family: var(--font-sans); cursor: pointer; }
 
 /* ─── Hero ───────────────────────────────────────────────────────────────── */
 /* ─── Hero ───────────────────────────────────────────────────────────────── */
+/* ─── Hero ───────────────────────────────────────────────────────────────── */
 .hero {
+  position: relative;
   padding: 72px 0 80px;
+  overflow: hidden;
 }
 
-/* Two-column layout */
+/* Background tile layer — right half, behind everything */
+.hero-bg-layer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  z-index: 0;
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+  background-position: left center;
+  pointer-events: none;
+}
+
+/* Foreground image layer — right half, full hero height, behind content */
+.hero-fg-layer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+.hero-fg-layer img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.hero-fg-layer img.loaded { opacity: 1; }
+
+/* Content grid — sits above both image layers */
 .hero-layout {
+  position: relative;
+  z-index: 2;
   display: grid;
   grid-template-columns: 1fr 360px;
   gap: 10px;
   align-items: center;
 }
 
-/* Left column */
+/* Left column — content */
 .hero-content {}
+
+/* Right column — transparent, just holds grid space */
+.hero-visual { height: 100%; }
 
 .hero h1 {
   font-size: var(--text-3xl);
@@ -172,47 +215,17 @@ button { font-family: var(--font-sans); cursor: pointer; }
   margin-bottom: 32px;
 }
 
-/* Right column — visual panel */
-.hero-visual {
-  position: relative;
-  height: 480px;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background-color: #faf8f4;
-  /* background-image set via JS from Notion CMS */
-  background-repeat: repeat-x;
-  background-size: auto 100%;
-  background-position: center;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-}
-
-/* Foreground image — max 360×480, object-fit keeps proportions */
-.hero-visual-img {
-  display: block;
-  width: 100%;
-  max-width: 360px;
-  max-height: 480px;
-  object-fit: contain;
-  object-position: bottom center;
-  position: relative;
-  z-index: 1;
-  /* Hidden until src is set via JS */
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.hero-visual-img.loaded { opacity: 1; }
-
-/* Responsive — stack on smaller screens */
+/* Responsive */
 @media (max-width: 860px) {
+  .hero-bg-layer,
+  .hero-fg-layer {
+    width: 100%;
+    opacity: 0.15; /* subtle on mobile so text stays readable */
+  }
   .hero-layout {
     grid-template-columns: 1fr;
   }
-  .hero-visual {
-    height: 280px;
-    order: -1; /* image above content on mobile */
-  }
+  .hero-visual { display: none; }
 }
 .console {
   display: flex;

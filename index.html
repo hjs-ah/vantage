@@ -33,10 +33,20 @@
 
 <!-- ─── Hero ─────────────────────────────────────────────────────────────── -->
 <section class="hero" id="hero-section">
+
+  <!-- Layer 0: background tile — right half, set via Notion -->
+  <div class="hero-bg-layer" id="heroBgLayer"></div>
+
+  <!-- Layer 1: foreground image — full hero height, right half, set via Notion -->
+  <div class="hero-fg-layer" id="heroFgLayer">
+    <img id="heroVisualImg" src="" alt="" aria-hidden="true">
+  </div>
+
+  <!-- Layer 2: content grid -->
   <div class="container">
     <div class="hero-layout">
 
-      <!-- Left: content -->
+      <!-- Left: text content -->
       <div class="hero-content">
         <div class="avail-badge">
           <span class="avail-dot" id="availDot"></span>
@@ -58,10 +68,8 @@
         </div>
       </div>
 
-      <!-- Right: visual panel — images controlled via Notion CMS -->
-      <div class="hero-visual" id="heroVisual">
-        <img class="hero-visual-img" id="heroVisualImg" src="" alt="" aria-hidden="true">
-      </div>
+      <!-- Right: transparent spacer — holds grid column, image is behind via absolute -->
+      <div class="hero-visual" aria-hidden="true"></div>
 
     </div>
   </div>

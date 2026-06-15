@@ -1,7 +1,7 @@
 // api/availability.js
 // Reads the "Production" row from the Site Settings Notion database
-// Env vars: NOTION_SECRET, NOTION_SETTINGS_DB_ID (the collection UUID below)
-// DB ID: 043642a8-9769-4612-81f8-cdf94e3988a5
+// Env vars: NOTION_SECRET, NOTION_SETTINGS_DB_ID
+// DB ID: 83d12537-aced-4c3a-ae68-f22cfc8bcba1  (the database, not the collection)
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');

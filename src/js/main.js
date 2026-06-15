@@ -100,25 +100,24 @@ function setAvailability(available, hours = 24) {
 
 function applyHeroImages(fgUrl, bgUrl) {
   console.log('[VD] applyHeroImages — fg:', fgUrl || '(empty)', '| bg:', bgUrl || '(empty)');
-  const visual = document.getElementById('heroVisual');
-  const img    = document.getElementById('heroVisualImg');
 
-  if (bgUrl && visual) {
-    visual.style.backgroundImage = `url('${bgUrl}')`;
-    console.log('[VD] Background image set on #heroVisual');
+  const bgLayer = document.getElementById('heroBgLayer');
+  const fgImg   = document.getElementById('heroVisualImg');
+
+  if (bgUrl && bgLayer) {
+    bgLayer.style.backgroundImage = `url('${bgUrl}')`;
+    console.log('[VD] Background tile set on #heroBgLayer');
   } else {
-    console.log('[VD] No background image URL — skipping');
+    console.log('[VD] No background URL — bg layer stays empty');
   }
 
-  if (fgUrl && img) {
+  if (fgUrl && fgImg) {
     console.log('[VD] Setting foreground image src:', fgUrl);
-    img.src = fgUrl;
-    img.onload  = () => { console.log('[VD] Foreground image loaded OK'); img.classList.add('loaded'); };
-    img.onerror = () => console.error('[VD] Foreground image FAILED to load — check URL is publicly accessible:', fgUrl);
-    img.alt = 'Vantage Delta';
+    fgImg.src     = fgUrl;
+    fgImg.onload  = () => { console.log('[VD] Foreground image loaded OK'); fgImg.classList.add('loaded'); };
+    fgImg.onerror = () => console.error('[VD] Foreground image FAILED to load — check URL is public:', fgUrl);
   } else {
-    console.log('[VD] No foreground image URL — hiding panel image');
-    if (img) img.style.display = 'none';
+    console.log('[VD] No foreground image URL');
   }
 }
 
