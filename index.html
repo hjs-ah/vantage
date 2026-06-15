@@ -370,20 +370,29 @@
   </div>
 </aside>
 
-<script charset="utf-8" type="text/javascript" src="//js-na2.hsforms.net/forms/embed/v2.js"></script>
+<!-- HubSpot embed v2 — loaded async, form initialized on first card open -->
+<script charset="utf-8" type="text/javascript" src="//js-na2.hsforms.net/forms/embed/v2.js" async></script>
 <script>
-  window.hsFormsReady = window.hsFormsReady || [];
-  window.hsFormsReady.push(function() {
-    hbspt.forms.create({
-      region: "na2",
-      portalId: "246483124",
-      formId: "dcd3683c-7e55-4ae4-b282-bf4c3a5fb9b4",
-      target: "#hbspt-form-target",
-      onFormReady: function() {
-        // Form is in the DOM — CSS overrides will handle the rest
+  var hsFormLoaded = false;
+
+  function initHubSpotForm() {
+    if (hsFormLoaded) return; // only create once
+    function tryCreate() {
+      if (window.hbspt && window.hbspt.forms) {
+        hbspt.forms.create({
+          region: "na2",
+          portalId: "246483124",
+          formId: "dcd3683c-7e55-4ae4-b282-bf4c3a5fb9b4",
+          target: "#hbspt-form-target"
+        });
+        hsFormLoaded = true;
+      } else {
+        // Script not ready yet — retry in 100ms
+        setTimeout(tryCreate, 100);
       }
-    });
-  });
+    }
+    tryCreate();
+  }
 </script>
 
 <script src="./src/js/main.js"></script>

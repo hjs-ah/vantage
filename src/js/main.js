@@ -118,13 +118,13 @@ loadAvailability();
 /* ── 6. Quick Book card ──────────────────────────────────────────────────── */
 const qbOverlay = document.getElementById('qbOverlay');
 const qbCard    = document.getElementById('qbCard');
-const qbForm    = document.getElementById('qbForm');
-const qbConfirm = document.getElementById('qbConfirm');
 
 function openQB() {
   qbOverlay.classList.add('open');
   qbCard.classList.add('open');
   document.body.style.overflow = 'hidden';
+  // Initialize HubSpot form on first open
+  if (typeof initHubSpotForm === 'function') initHubSpotForm();
 }
 function closeQB() {
   qbOverlay.classList.remove('open');
