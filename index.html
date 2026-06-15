@@ -32,27 +32,37 @@
 </header>
 
 <!-- ─── Hero ─────────────────────────────────────────────────────────────── -->
-<section class="hero">
+<section class="hero" id="hero-section">
   <div class="container">
-    <div class="avail-badge">
-      <span class="avail-dot" id="availDot"></span>
-      <span id="availText">Coaching available within <span id="availHours">24</span> hours</span>
-    </div>
-    <div class="hero-inner">
-      <h1>See your next move<br>from a <em>higher</em> vantage.</h1>
-      <p class="hero-sub">
-        Hands-on consulting and productized tools for driven professionals,
-        people influencers, and visionary founders — built for where you're going next.
-      </p>
-      <div class="console">
-        <span class="console-prompt">vd&gt;</span>
-        <span id="consoleText"></span>
-        <span class="console-cursor"></span>
+    <div class="hero-layout">
+
+      <!-- Left: content -->
+      <div class="hero-content">
+        <div class="avail-badge">
+          <span class="avail-dot" id="availDot"></span>
+          <span id="availText">Coaching available within <span id="availHours">24</span> hours</span>
+        </div>
+        <h1>See your next move<br>from a <em>higher</em> vantage.</h1>
+        <p class="hero-sub">
+          Hands-on consulting and productized tools for driven professionals,
+          people influencers, and visionary founders — built for where you're going next.
+        </p>
+        <div class="console">
+          <span class="console-prompt">vd&gt;</span>
+          <span id="consoleText"></span>
+          <span class="console-cursor"></span>
+        </div>
+        <div class="hero-actions">
+          <button class="btn btn-dark" id="heroBookBtn">Book a session</button>
+          <a class="btn btn-ghost" href="#lab01">Explore the labs</a>
+        </div>
       </div>
-      <div class="hero-actions">
-        <button class="btn btn-dark" id="heroBookBtn">Book a session</button>
-        <a class="btn btn-ghost" href="#lab01">Explore the labs</a>
+
+      <!-- Right: visual panel — images controlled via Notion CMS -->
+      <div class="hero-visual" id="heroVisual">
+        <img class="hero-visual-img" id="heroVisualImg" src="" alt="" aria-hidden="true">
       </div>
+
     </div>
   </div>
 </section>
@@ -335,6 +345,14 @@
     <div class="footer-logo">
       <img src="./public/logo.png" alt="Vantage Delta">
     </div>
+    <nav class="footer-nav">
+      <a href="#lab01">Lab 01</a>
+      <a href="#lab02">Lab 02</a>
+      <a href="#lab03">Lab 03</a>
+      <a href="#how">How it works</a>
+      <a href="#cases">Results</a>
+      <a href="#faq">FAQ</a>
+    </nav>
     <div class="footer-meta">
       <span>&copy; 2026 Vantage Delta</span>
     </div>
@@ -348,10 +366,25 @@
   <h3>Quick book</h3>
   <p class="qb-sub">Tell us what you need and we'll follow up within one business day.</p>
   <div id="qbFormWrap">
-    <script src="https://js-na2.hsforms.net/forms/embed/246483124.js" defer></script>
-    <div class="hs-form-frame" data-region="na2" data-form-id="dcd3683c-7e55-4ae4-b282-bf4c3a5fb9b4" data-portal-id="246483124"></div>
+    <div id="hbspt-form-target"></div>
   </div>
 </aside>
+
+<script charset="utf-8" type="text/javascript" src="//js-na2.hsforms.net/forms/embed/v2.js"></script>
+<script>
+  window.hsFormsReady = window.hsFormsReady || [];
+  window.hsFormsReady.push(function() {
+    hbspt.forms.create({
+      region: "na2",
+      portalId: "246483124",
+      formId: "dcd3683c-7e55-4ae4-b282-bf4c3a5fb9b4",
+      target: "#hbspt-form-target",
+      onFormReady: function() {
+        // Form is in the DOM — CSS overrides will handle the rest
+      }
+    });
+  });
+</script>
 
 <script src="./src/js/main.js"></script>
 </body>

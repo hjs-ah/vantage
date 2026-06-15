@@ -137,14 +137,22 @@ button { font-family: var(--font-sans); cursor: pointer; }
 .avail-dot.off { background: var(--color-red); }
 
 /* ─── Hero ───────────────────────────────────────────────────────────────── */
+/* ─── Hero ───────────────────────────────────────────────────────────────── */
 .hero {
   padding: 72px 0 80px;
 }
-.hero-inner {
+
+/* Two-column layout */
+.hero-layout {
   display: grid;
-  grid-template-columns: 1fr;
-  max-width: 680px;
+  grid-template-columns: 1fr 360px;
+  gap: 48px;
+  align-items: center;
 }
+
+/* Left column */
+.hero-content {}
+
 .hero h1 {
   font-size: var(--text-3xl);
   font-weight: 800;
@@ -162,6 +170,49 @@ button { font-family: var(--font-sans); cursor: pointer; }
   line-height: 1.65;
   max-width: 520px;
   margin-bottom: 32px;
+}
+
+/* Right column — visual panel */
+.hero-visual {
+  position: relative;
+  height: 480px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background-color: var(--color-surface-2);
+  /* background-image set via JS from Notion CMS */
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+/* Foreground image — max 360×480, object-fit keeps proportions */
+.hero-visual-img {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  max-height: 480px;
+  object-fit: contain;
+  object-position: bottom center;
+  position: relative;
+  z-index: 1;
+  /* Hidden until src is set via JS */
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.hero-visual-img.loaded { opacity: 1; }
+
+/* Responsive — stack on smaller screens */
+@media (max-width: 860px) {
+  .hero-layout {
+    grid-template-columns: 1fr;
+  }
+  .hero-visual {
+    height: 280px;
+    order: -1; /* image above content on mobile */
+  }
 }
 .console {
   display: flex;
@@ -706,41 +757,38 @@ details[open] .faq-toggle { transform: rotate(45deg); }
   .qb-card.open { right: 5vw; }
 }
 
-/* ─── HubSpot form overrides ─────────────────────────────────────────────────
-   HubSpot injects its own styles — these use specificity + !important where
-   needed to override them without breaking HubSpot's submit/validation logic. */
-
-/* Wrapper sizing */
+/* ─── HubSpot form overrides (hbspt.forms.create — renders in page DOM) ───── */
 #qbFormWrap { flex: 1; overflow-y: auto; }
-#qbFormWrap .hs-form-frame { width: 100% !important; border: none !important; }
 
-/* HubSpot renders inside an iframe — target via :has or with a style tag.
-   The rules below apply to the outer wrapper; for iframe internals we inject
-   via the onFormReady callback in main.js (see bottom of that file).          */
+/* Remove HubSpot's default wrapper padding */
+#qbFormWrap .hbspt-form,
+#qbFormWrap form.hs-form { margin: 0 !important; padding: 0 !important; }
 
-/* Label */
-.hs-form-field > label,
-.hs_firstname > label,
-.hs_lastname  > label,
-.hs_email     > label,
-.hs_phone     > label,
-.hs-form-field label {
+/* Field groups */
+#qbFormWrap .hs-form-field { margin-bottom: 12px !important; }
+#qbFormWrap .form-columns-2 { display: flex !important; gap: 10px !important; }
+#qbFormWrap .form-columns-1 .hs-form-field,
+#qbFormWrap .form-columns-2 .hs-form-field {
+  float: none !important; width: 100% !important; padding: 0 !important;
+}
+
+/* Labels */
+#qbFormWrap label {
   font-family: var(--font-sans) !important;
   font-size: 12px !important;
   font-weight: 600 !important;
   color: var(--color-ink) !important;
-  margin-bottom: 4px !important;
   display: block !important;
+  margin-bottom: 5px !important;
 }
 
-/* Inputs */
-.hs-form-field input[type="text"],
-.hs-form-field input[type="email"],
-.hs-form-field input[type="tel"],
-.hs-form-field input[type="number"],
-.hs-form-field select,
-.hs-form-field textarea,
-.hs-input {
+/* Inputs, selects, textareas */
+#qbFormWrap input[type="text"],
+#qbFormWrap input[type="email"],
+#qbFormWrap input[type="tel"],
+#qbFormWrap input[type="number"],
+#qbFormWrap select,
+#qbFormWrap textarea {
   width: 100% !important;
   padding: 9px 12px !important;
   border: 1px solid var(--color-border) !important;
@@ -750,36 +798,24 @@ details[open] .faq-toggle { transform: rotate(45deg); }
   color: var(--color-ink) !important;
   background: var(--color-paper) !important;
   box-shadow: none !important;
-  transition: border-color 0.15s !important;
+  box-sizing: border-box !important;
   height: auto !important;
   line-height: 1.4 !important;
   -webkit-appearance: none !important;
   appearance: none !important;
+  transition: border-color 0.15s !important;
 }
-
-.hs-form-field input:focus,
-.hs-form-field select:focus,
-.hs-form-field textarea:focus,
-.hs-input:focus {
+#qbFormWrap input:focus,
+#qbFormWrap select:focus,
+#qbFormWrap textarea:focus {
   outline: none !important;
   border-color: var(--color-primary) !important;
   box-shadow: none !important;
 }
 
-/* Field spacing */
-.hs-form-field,
-.hs_firstname,
-.hs_lastname,
-.hs_email,
-.hs_phone,
-.field {
-  margin-bottom: 12px !important;
-}
-
 /* Submit button */
-.hs-submit input[type="submit"],
-.hs-button,
-input.hs-button {
+#qbFormWrap input[type="submit"],
+#qbFormWrap .hs-button {
   font-family: var(--font-sans) !important;
   font-size: 13.5px !important;
   font-weight: 600 !important;
@@ -788,34 +824,30 @@ input.hs-button {
   border: none !important;
   border-radius: var(--radius-pill) !important;
   padding: 11px 24px !important;
-  cursor: pointer !important;
   width: 100% !important;
-  transition: background 0.15s !important;
+  cursor: pointer !important;
   box-shadow: none !important;
   height: auto !important;
-  line-height: 1.4 !important;
   margin-top: 4px !important;
+  transition: background 0.15s !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
 }
-.hs-submit input[type="submit"]:hover,
-.hs-button:hover,
-input.hs-button:hover {
-  background: var(--color-primary-dark) !important;
-}
+#qbFormWrap input[type="submit"]:hover,
+#qbFormWrap .hs-button:hover { background: var(--color-primary-dark) !important; }
 
-/* Error messages */
-.hs-error-msgs,
-.hs-error-msg {
+/* Errors */
+#qbFormWrap .hs-error-msgs { list-style: none !important; padding: 0 !important; margin: 4px 0 0 !important; }
+#qbFormWrap .hs-error-msg,
+#qbFormWrap .hs-main-font-element {
   font-family: var(--font-sans) !important;
   font-size: 11.5px !important;
   color: var(--color-red) !important;
-  margin-top: 4px !important;
-  list-style: none !important;
-  padding: 0 !important;
 }
 
-/* Success / thank you message */
-.submitted-message,
-.hs-form__thank-you {
+/* Thank you / success message */
+#qbFormWrap .submitted-message,
+#qbFormWrap .hs-form__thank-you {
   font-family: var(--font-sans) !important;
   font-size: 13.5px !important;
   font-weight: 600 !important;
@@ -826,20 +858,11 @@ input.hs-button:hover {
   text-align: center !important;
 }
 
-/* Remove HubSpot branding / GDPR footer text */
-.hs-richtext.hs-main-font-element,
-.legal-consent-container,
-.hs-form-boilerplate {
+/* Legal / GDPR text */
+#qbFormWrap .hs-richtext,
+#qbFormWrap .legal-consent-container,
+#qbFormWrap .hs-form-boilerplate {
   font-family: var(--font-sans) !important;
   font-size: 11px !important;
   color: var(--color-ink-soft) !important;
 }
-
-/* Remove default HubSpot row/column padding */
-.form-columns-1 .hs-form-field,
-.form-columns-2 .hs-form-field {
-  padding: 0 !important;
-  float: none !important;
-  width: 100% !important;
-}
-.form-columns-2 { display: flex !important; gap: 10px !important; }

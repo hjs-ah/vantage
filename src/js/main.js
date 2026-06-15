@@ -68,7 +68,7 @@ document.querySelectorAll('.faq-item').forEach(item => {
   });
 });
 
-/* ── 5. Availability badge — fetches from /api/availability ─────────────── */
+/* ── 5. Availability badge + hero images — fetches from /api/availability ── */
 const availDot  = document.getElementById('availDot');
 const availText = document.getElementById('availText');
 
@@ -77,8 +77,8 @@ async function loadAvailability() {
     const res  = await fetch('/api/availability');
     const data = await res.json();
     setAvailability(data.available, data.hours);
+    applyHeroImages(data.heroFgImage, data.heroBgImage);
   } catch {
-    // API not wired yet — fall back to localStorage or default
     const saved      = localStorage.getItem('vd_available');
     const savedHours = localStorage.getItem('vd_hours');
     setAvailability(saved !== '0', parseInt(savedHours) || 24);
@@ -92,6 +92,24 @@ function setAvailability(available, hours = 24) {
   } else {
     availDot.classList.add('off');
     availText.textContent = 'No coaching available right now';
+  }
+}
+
+function applyHeroImages(fgUrl, bgUrl) {
+  const visual = document.getElementById('heroVisual');
+  const img    = document.getElementById('heroVisualImg');
+
+  if (bgUrl && visual) {
+    visual.style.backgroundImage = `url('${bgUrl}')`;
+  }
+
+  if (fgUrl && img) {
+    img.src = fgUrl;
+    img.onload = () => img.classList.add('loaded');
+    img.alt = 'Vantage Delta';
+  } else if (img) {
+    // No image set yet — hide the visual panel gracefully
+    img.style.display = 'none';
   }
 }
 
@@ -178,56 +196,4 @@ qbForm?.addEventListener('submit', e => {
 document.getElementById('clientLoginBtn')?.addEventListener('click', () => {
   /* Replace with redirect to /login or auth provider when ready */
   alert('Client portal coming soon.');
-});
-
-/* ── HubSpot form styling — iframe injection ─────────────────────────────────
-   HubSpot's hs-form-frame embed uses an iframe. Our CSS can't reach inside it
-   directly, so we inject a <style> tag into the iframe document once HubSpot
-   fires the onFormReady message event.                                         */
-window.addEventListener('message', function(e) {
-  if (!e.data || e.data.type !== 'hsFormCallback') return;
-  if (e.data.eventName !== 'onFormReady') return;
-
-  // Find the HubSpot iframe
-  const frames = document.querySelectorAll('iframe');
-  frames.forEach(frame => {
-    try {
-      const doc = frame.contentDocument || frame.contentWindow?.document;
-      if (!doc) return;
-
-      const style = doc.createElement('style');
-      style.textContent = `
-        body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif !important; margin: 0 !important; }
-        label { font-size: 12px !important; font-weight: 600 !important; color: #1E1B18 !important; display: block !important; margin-bottom: 4px !important; }
-        input[type="text"], input[type="email"], input[type="tel"], select, textarea {
-          width: 100% !important; padding: 9px 12px !important;
-          border: 1px solid #E2DDD6 !important; border-radius: 6px !important;
-          font-family: 'Plus Jakarta Sans', sans-serif !important; font-size: 13.5px !important;
-          color: #1E1B18 !important; background: #FAF8F4 !important;
-          box-shadow: none !important; box-sizing: border-box !important;
-          -webkit-appearance: none !important; appearance: none !important;
-        }
-        input:focus, select:focus, textarea:focus {
-          outline: none !important; border-color: #A0632A !important;
-        }
-        .hs-form-field { margin-bottom: 12px !important; }
-        input[type="submit"], .hs-button {
-          font-family: 'Plus Jakarta Sans', sans-serif !important; font-size: 13.5px !important;
-          font-weight: 600 !important; background: #1E1B18 !important; color: #FAF8F4 !important;
-          border: none !important; border-radius: 999px !important;
-          padding: 11px 24px !important; width: 100% !important; cursor: pointer !important;
-          margin-top: 4px !important; transition: background 0.15s !important;
-        }
-        input[type="submit"]:hover { background: #6B3D14 !important; }
-        .hs-error-msg { font-size: 11.5px !important; color: #C0463C !important; }
-        .submitted-message { font-size: 13.5px !important; font-weight: 600 !important; color: #3B7A4E !important; background: #E4EFE6 !important; border-radius: 6px !important; padding: 14px !important; text-align: center !important; }
-        .form-columns-2 { display: flex !important; gap: 10px !important; }
-        .form-columns-1 .hs-form-field, .form-columns-2 .hs-form-field { float: none !important; width: 100% !important; padding: 0 !important; }
-        .hs-richtext, .legal-consent-container { font-size: 11px !important; color: #7A746E !important; }
-      `;
-      doc.head.appendChild(style);
-    } catch(err) {
-      // Cross-origin frame — HubSpot's older embed; outer CSS handles it
-    }
-  });
 });
