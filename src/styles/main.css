@@ -7,7 +7,11 @@ html { scroll-behavior: smooth; }
 body {
   font-family: var(--font-sans);
   font-size: var(--text-base);
-  background: var(--color-paper);
+  background-color: var(--color-paper);
+  background-repeat: repeat-x;
+  background-size: auto 165px;
+  background-position: left bottom;
+  background-attachment: fixed;
   color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
   line-height: 1.5;
@@ -157,19 +161,8 @@ button { font-family: var(--font-sans); cursor: pointer; }
   pointer-events: none;
 }
 
-/* Background tile — right half of the constrained column */
-.hero-bg-layer {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 50%;
-  height: 100%;
-  z-index: 0;
-  background-repeat: repeat-x;
-  background-size: auto 165px;
-  background-position: left bottom;
-  pointer-events: none;
-}
+/* Background tile is now on body — this layer kept for JS compatibility only */
+.hero-bg-layer { display: none; }
 
 /* Foreground image slots — full height cover, stacked, fade between */
 .hero-fg-layer {
